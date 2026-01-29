@@ -25,6 +25,15 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
                     <div>
+                        <h4 style={{ marginBottom: 'var(--spacing-3)' }}>SERVICES</h4>
+                        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+                            <li><Link to="/services/full-production">Full Production</Link></li>
+                            <li><Link to="/services/dry-hire">Dry Hire</Link></li>
+                            <li><Link to="/services/installation">Installation</Link></li>
+                            <li><Link to="/services/broadcast-led">Broadcast & LED</Link></li>
+                        </ul>
+                    </div>
+                    <div>
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>COMPANY</h4>
                         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
                             <li><Link to="/about">Our Story</Link></li>
@@ -36,9 +45,9 @@ const Footer: React.FC = () => {
                     <div>
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>CONNECT</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={16} /> info@arkproaudio.com</div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={16} /> +1 (800) ARK-GEAR</div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} /> Los Angeles, CA</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={16} /> mac2arkproaudio@gmail.com</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={16} /> +63 917 316 8388</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} /> 7th street, Lawaan Village, Iloilo City, Philippines</div>
                         </div>
                     </div>
                 </div>
