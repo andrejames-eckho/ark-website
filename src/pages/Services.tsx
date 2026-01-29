@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Camera, Music, Zap, Settings, ArrowRight } from 'lucide-react';
 
 const Services: React.FC = () => {
@@ -7,25 +8,29 @@ const Services: React.FC = () => {
             title: 'Full Production Services',
             desc: 'From concept to completion, we provide turnkey technical production for concerts, festivals, and corporate summits.',
             icon: Music,
-            features: ['Sound Design & Reinforcement', 'Dynamic Lighting Plots', 'Stage Management', 'Livestreaming & Broadcast']
+            features: ['Sound Design & Reinforcement', 'Dynamic Lighting Plots', 'Stage Management', 'Livestreaming & Broadcast'],
+            link: '/services/full-production'
         },
         {
             title: 'Dry Hire Rentals',
             desc: 'Professional gear rentals for when you have the team but need the best equipment in the world.',
             icon: Settings,
-            features: ['Meticulous QC Process', 'Customized Road Cases', 'Flexible Pick-up/Drop-off', '24/7 Technical Support']
+            features: ['Meticulous QC Process', 'Customized Road Cases', 'Flexible Pick-up/Drop-off', '24/7 Technical Support'],
+            link: '/services/dry-hire'
         },
         {
             title: 'Installation & Integration',
             desc: 'Permanent AV solutions for venues, corporate offices, and broadcast studios.',
             icon: Zap,
-            features: ['System Consultation', 'Procurement & Licensing', 'Acoustic Treatment', 'Custom Rack Integration']
+            features: ['System Consultation', 'Procurement & Licensing', 'Acoustic Treatment', 'Custom Rack Integration'],
+            link: '/services/installation'
         },
         {
             title: 'Broadcast & LED Works',
             desc: 'High-resolution LED walls and broadcast-grade camera systems for visual impact.',
             icon: Camera,
-            features: ['Ultra-High Pitch LED Walls', 'Multi-Cam Switching', 'Media Server Management', 'Real-time Color Grading']
+            features: ['Ultra-High Pitch LED Walls', 'Multi-Cam Switching', 'Media Server Management', 'Real-time Color Grading'],
+            link: '/services/broadcast-led'
         }
     ];
 
@@ -52,7 +57,7 @@ const Services: React.FC = () => {
                         {services.map((service, i) => (
                             <div key={i} style={{
                                 display: 'grid',
-                                gridTemplateColumns: i % 2 === 0 ? '1fr 1fr' : '1fr 1fr',
+                                gridTemplateColumns: '1fr 1fr',
                                 gap: 'var(--spacing-8)',
                                 backgroundColor: 'var(--color-surface)',
                                 border: '1px solid var(--color-border)',
@@ -76,9 +81,9 @@ const Services: React.FC = () => {
                                             </li>
                                         ))}
                                     </ul>
-                                    <button style={{
+                                    <Link to={service.link} style={{
                                         marginTop: 'var(--spacing-8)',
-                                        display: 'flex',
+                                        display: 'inline-flex',
                                         alignItems: 'center',
                                         gap: '8px',
                                         color: 'var(--color-primary)',
@@ -87,7 +92,7 @@ const Services: React.FC = () => {
                                         textTransform: 'uppercase'
                                     }}>
                                         LEARN MORE ABOUT THIS SERVICE <ArrowRight size={18} />
-                                    </button>
+                                    </Link>
                                 </div>
                                 <div style={{
                                     height: '350px',
