@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, ChevronRight, Speaker, Lightbulb, TowerControl as Rigging } from 'lucide-react';
+import QuoteForm from '../components/QuoteForm';
 
 const Home: React.FC = () => {
+    const [showQuoteForm, setShowQuoteForm] = useState(false);
+
     return (
         <>
             {/* Hero */}
@@ -146,14 +149,18 @@ const Home: React.FC = () => {
                         Get a custom quote in minutes for your audio and lighting needs.
                     </p>
                     <div style={{ display: 'flex', gap: 'var(--spacing-2)', justifyContent: 'center' }}>
-                        <button style={{
-                            backgroundColor: '#000',
-                            color: '#fff',
-                            padding: '16px 40px',
-                            borderRadius: '4px',
-                            fontWeight: 800,
-                            fontSize: '1.1rem'
-                        }}>GET A QUOTE NOW</button>
+                        <button
+                            onClick={() => setShowQuoteForm(true)}
+                            style={{
+                                backgroundColor: '#000',
+                                color: '#fff',
+                                padding: '16px 40px',
+                                borderRadius: '4px',
+                                fontWeight: 800,
+                                fontSize: '1.1rem',
+                                cursor: 'pointer'
+                            }}
+                        >GET A QUOTE NOW</button>
                         <button style={{
                             backgroundColor: 'transparent',
                             border: '2px solid #000',
@@ -166,6 +173,9 @@ const Home: React.FC = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Quote Form Modal */}
+            {showQuoteForm && <QuoteForm onClose={() => setShowQuoteForm(false)} />}
         </>
     );
 };

@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    onOpenQuoteForm: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
     return (
         <header className="header" style={{
             position: 'sticky',
@@ -20,14 +24,21 @@ const Header: React.FC = () => {
                     <Link to="/equipment" style={{ fontWeight: 500, fontSize: '0.9rem' }}>EQUIPMENT</Link>
                     <Link to="/services" style={{ fontWeight: 500, fontSize: '0.9rem' }}>SERVICES</Link>
                     <Link to="/about" style={{ fontWeight: 500, fontSize: '0.9rem' }}>ABOUT</Link>
-                    <button style={{
-                        backgroundColor: 'var(--color-primary)',
-                        color: '#000',
-                        padding: '8px 20px',
-                        borderRadius: '4px',
-                        fontWeight: 700,
-                        fontSize: '0.85rem'
-                    }}>GET A QUOTE</button>
+                    <button
+                        onClick={() => {
+                            console.log('GET A QUOTE button clicked');
+                            onOpenQuoteForm();
+                        }}
+                        style={{
+                            backgroundColor: 'var(--color-primary)',
+                            color: '#000',
+                            padding: '8px 20px',
+                            borderRadius: '4px',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            cursor: 'pointer'
+                        }}
+                    >GET A QUOTE</button>
                 </nav>
             </div>
         </header>
