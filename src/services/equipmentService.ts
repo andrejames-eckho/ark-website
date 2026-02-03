@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { EquipmentWithCategory, Category } from '../types/equipment';
+import { EquipmentWithCategory, Category, Equipment } from '../types/equipment';
 import { getEquipmentImageUrl } from '../utils/imageHelper';
 
 export const fetchEquipment = async (): Promise<EquipmentWithCategory[]> => {
@@ -238,5 +238,161 @@ export const getPopularEquipmentForQuote = async (limit: number = 10): Promise<E
   } catch (error) {
     console.error('Unexpected error fetching popular equipment for quote:', error);
     return [];
+  }
+};
+
+// Admin CRUD operations
+export const addEquipment = async (equipment: Omit<Equipment, 'id' | 'created_at' | 'updated_at'>): Promise<Equipment | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .insert([equipment])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding equipment:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error adding equipment:', error);
+    throw error;
+  }
+};
+
+export const updateEquipment = async (id: number, equipment: Partial<Equipment>): Promise<Equipment | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .update(equipment)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating equipment:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error updating equipment:', error);
+    throw error;
+  }
+};
+
+export const deleteEquipment = async (id: number): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('equipment')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting equipment:', error);
+      throw error;
+    }
+  } catch (error) {
+    console.error('Unexpected error deleting equipment:', error);
+    throw error;
+  }
+};
+
+export const uploadEquipmentImage = async (file: File): Promise<string> => {
+  try {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `equipment/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('equipment-images')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error('Error uploading image:', uploadError);
+      throw uploadError;
+    }
+
+    return filePath;
+  } catch (error) {
+    console.error('Unexpected error uploading image:', error);
+    throw error;
+  }
+};
+
+export const deleteEquipmentImage = async (imagePath: string): Promise<void> => {
+  try {
+    const { error } = await supabase.storage
+      .from('equipment-images')
+      .remove([imagePath]);
+
+    if (error) {
+      console.error('Error deleting image:', error);
+      throw error;
+    }
+  } catch (error) {
+    console.error('Unexpected error deleting image:', error);
+    throw error;
+  }
+};
+
+// Admin category management
+export const addCategory = async (category: Omit<Category, 'id' | 'created_at'>): Promise<Category | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert([category])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding category:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error adding category:', error);
+    throw error;
+  }
+};
+
+export const updateCategory = async (id: number, category: Partial<Category>): Promise<Category | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .update(category)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error updating category:', error);
+    throw error;
+  }
+};
+
+export const deleteCategory = async (id: number): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    }
+  } catch (error) {
+    console.error('Unexpected error deleting category:', error);
+    throw error;
   }
 };

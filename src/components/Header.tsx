@@ -1,11 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
     onOpenQuoteForm: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
+    const { isAdmin } = useAuth();
+
     return (
         <header className="header" style={{
             position: 'sticky',
@@ -24,6 +27,19 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
                     <Link to="/equipment" style={{ fontWeight: 500, fontSize: '0.9rem' }}>EQUIPMENT</Link>
                     <Link to="/services" style={{ fontWeight: 500, fontSize: '0.9rem' }}>SERVICES</Link>
                     <Link to="/about" style={{ fontWeight: 500, fontSize: '0.9rem' }}>ABOUT</Link>
+                    {isAdmin && (
+                        <Link 
+                            to="/admin" 
+                            style={{ 
+                                fontWeight: 500, 
+                                fontSize: '0.9rem',
+                                color: 'var(--color-primary)',
+                                textDecoration: 'underline'
+                            }}
+                        >
+                            ADMIN
+                        </Link>
+                    )}
                     <button
                         onClick={() => {
                             console.log('GET A QUOTE button clicked');
