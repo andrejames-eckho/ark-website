@@ -1,5 +1,6 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { getEquipmentOptionsForQuote } from '../services/equipmentService';
 
 interface QuoteFormProps {
     onClose: () => void;
@@ -46,22 +47,39 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const [gearOptions, setGearOptions] = useState<string[]>([]);
+    const [loadingGear, setLoadingGear] = useState(true);
 
-    // Available gear options
-    const gearOptions = [
-        'Audio System',
-        'Microphones',
-        'Mixers',
-        'Speakers',
-        'Lighting System',
-        'LED Lights',
-        'Moving Heads',
-        'Stage Lights',
-        'Rigging Equipment',
-        'Video Equipment',
-        'Monitors',
-        'Projection'
-    ];
+    // Load equipment options from Supabase
+    useEffect(() => {
+        const loadGearOptions = async () => {
+            try {
+                const options = await getEquipmentOptionsForQuote();
+                setGearOptions(options);
+            } catch (error) {
+                console.error('Error loading gear options:', error);
+                // Fallback to default options if API fails
+                setGearOptions([
+                    'Audio System',
+                    'Microphones', 
+                    'Mixers',
+                    'Speakers',
+                    'Lighting System',
+                    'LED Lights',
+                    'Moving Heads',
+                    'Stage Lights',
+                    'Rigging Equipment',
+                    'Video Equipment',
+                    'Monitors',
+                    'Projection'
+                ]);
+            } finally {
+                setLoadingGear(false);
+            }
+        };
+
+        loadGearOptions();
+    }, []);
 
     // Validation functions
     const validateEmail = (email: string): boolean => {
@@ -505,36 +523,43 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
                         <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600, fontSize: '0.9rem' }}>
                             Select Equipment Needed *
                         </label>
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                            gap: '8px'
-                        }}>
-                            {gearOptions.map((gear) => (
-                                <button
-                                    key={gear}
-                                    type="button"
-                                    onClick={() => handleGearToggle(gear)}
-                                    style={{
-                                        padding: '10px 12px',
-                                        backgroundColor: formData.gear_list.includes(gear)
-                                            ? 'var(--color-primary)'
-                                            : 'var(--color-bg)',
-                                        color: formData.gear_list.includes(gear) ? '#000' : 'var(--color-text)',
-                                        border: `1px solid ${formData.gear_list.includes(gear)
-                                            ? 'var(--color-primary)'
-                                            : 'var(--color-border)'}`,
-                                        borderRadius: '6px',
-                                        cursor: 'pointer',
-                                        fontSize: '0.85rem',
-                                        fontWeight: formData.gear_list.includes(gear) ? 600 : 400,
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    {gear}
-                                </button>
-                            ))}
-                        </div>
+                        {loadingGear ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-4)' }}>
+                                <Loader2 className="animate-spin" size={20} color="var(--color-primary)" />
+                                <span style={{ marginLeft: 'var(--spacing-2)', color: 'var(--color-text-muted)' }}>Loading equipment options...</span>
+                            </div>
+                        ) : (
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                                gap: '8px'
+                            }}>
+                                {gearOptions.map((gear) => (
+                                    <button
+                                        key={gear}
+                                        type="button"
+                                        onClick={() => handleGearToggle(gear)}
+                                        style={{
+                                            padding: '10px 12px',
+                                            backgroundColor: formData.gear_list.includes(gear)
+                                                ? 'var(--color-primary)'
+                                                : 'var(--color-bg)',
+                                            color: formData.gear_list.includes(gear) ? '#000' : 'var(--color-text)',
+                                            border: `1px solid ${formData.gear_list.includes(gear)
+                                                ? 'var(--color-primary)'
+                                                : 'var(--color-border)'}`,
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.85rem',
+                                            fontWeight: formData.gear_list.includes(gear) ? 600 : 400,
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                    >
+                                        {gear}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                         {errors.gear_list && (
                             <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '8px' }}>{errors.gear_list}</p>
                         )}
