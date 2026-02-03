@@ -17,6 +17,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import EquipmentManagement from './pages/admin/EquipmentManagement';
+import ContentUnavailable from './pages/ContentUnavailable';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -58,6 +59,9 @@ const App: React.FC = () => {
                             <Route index element={<Dashboard />} />
                             <Route path="equipment" element={<EquipmentManagement />} />
                         </Route>
+                        
+                        {/* Catch-all route for unassigned paths */}
+                        <Route path="*" element={<ContentUnavailable />} />
                     </Routes>
                 </Layout>
                 

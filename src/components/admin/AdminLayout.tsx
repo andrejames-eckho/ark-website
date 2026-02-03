@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Settings, LogOut, Package, Home } from 'lucide-react';
+import { LogOut, Package, Home } from 'lucide-react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 interface AdminLayoutProps {
@@ -34,11 +34,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       path: '/admin/equipment',
       label: 'Equipment',
       icon: Package
-    },
-    {
-      path: '/admin/settings',
-      label: 'Settings',
-      icon: Settings
     }
   ];
 

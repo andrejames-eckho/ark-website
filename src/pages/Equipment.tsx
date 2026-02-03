@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, X } from 'lucide-react';
 import { fetchEquipment, fetchCategories, searchEquipment, fetchEquipmentByCategory } from '../services/equipmentService';
 import { EquipmentWithCategory, Category } from '../types/equipment';
@@ -172,14 +173,15 @@ const Equipment: React.FC = () => {
                     position: 'fixed',
                     top: 0,
                     left: 0,
-                    right: 0,
-                    bottom: 0,
+                    width: '100vw',
+                    height: '100vh',
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     zIndex: 1000,
-                    padding: '20px'
+                    padding: '20px',
+                    boxSizing: 'border-box'
                 }}
                 onClick={onClose}
             >
@@ -520,11 +522,12 @@ const Equipment: React.FC = () => {
             `}</style>
             
             {/* Equipment Detail Modal */}
-            {isModalOpen && selectedEquipment && (
+            {isModalOpen && selectedEquipment && createPortal(
                 <EquipmentDetailModal 
                     equipment={selectedEquipment} 
                     onClose={closeModal} 
-                />
+                />,
+                document.body
             )}
         </div>
     );
