@@ -3,6 +3,7 @@ export interface Category {
   name: string;
   icon_name: string;
   created_at: string;
+  equipment_count?: number;
 }
 
 export interface Equipment {
