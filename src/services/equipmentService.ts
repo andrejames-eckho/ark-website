@@ -74,6 +74,7 @@ export const fetchEquipmentByCategory = async (categoryId: number): Promise<Equi
 
 export const searchEquipment = async (query: string): Promise<EquipmentWithCategory[]> => {
   try {
+    // First, search name and description in database (fast)
     const { data, error } = await supabase
       .from('equipment')
       .select(`
@@ -88,7 +89,53 @@ export const searchEquipment = async (query: string): Promise<EquipmentWithCateg
       return [];
     }
 
-    return data.map(item => ({
+    // Then, search all available equipment for specifications matches
+    const { data: allData, error: allError } = await supabase
+      .from('equipment')
+      .select(`
+        *,
+        categories(name, icon_name)
+      `)
+      .eq('status', 'available');
+
+    if (allError) {
+      console.error('Error fetching all equipment:', allError);
+      return [];
+    }
+
+    // Client-side filtering for specifications
+    const specMatches = (allData || []).filter((item: any) => {
+      if (!item.specifications) return false;
+
+      const queryWords = query.toLowerCase().split(' ').filter(word => word.length > 0);
+      if (queryWords.length === 0) return false;
+
+      // Create a searchable text from all specification keys and values
+      let specSearchText = '';
+      for (const key in item.specifications) {
+        if (item.specifications.hasOwnProperty(key)) {
+          const value = item.specifications[key];
+          specSearchText += ` ${key.toLowerCase()}`;
+          if (typeof value === 'string') {
+            specSearchText += ` ${value.toLowerCase()}`;
+          } else if (typeof value === 'number') {
+            specSearchText += ` ${value.toString()}`;
+          }
+        }
+      }
+
+      // Check if all query words are found in the specifications text
+      return queryWords.every(word => specSearchText.includes(word));
+    });
+
+    // Combine results and remove duplicates
+    const dbMatches = data || [];
+    const combinedResults = [...dbMatches, ...specMatches];
+    const uniqueResults = combinedResults.filter((item, index, self) => 
+      index === self.findIndex((t) => t.id === item.id)
+    );
+
+    return uniqueResults.map((item: any) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -182,6 +229,7 @@ export const getEquipmentByCategoryForQuote = async (categoryId: number): Promis
 
 export const searchEquipmentForQuote = async (query: string, categoryId?: number): Promise<EquipmentWithCategory[]> => {
   try {
+    // First, search name and description in database (fast)
     let supabaseQuery = supabase
       .from('equipment')
       .select(`
@@ -197,14 +245,66 @@ export const searchEquipmentForQuote = async (query: string, categoryId?: number
     const { data, error } = await supabaseQuery
       .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
       .order('name')
-      .limit(50); // Limit results for performance
+      .limit(50);
 
     if (error) {
       console.error('Error searching equipment for quote:', error);
       return [];
     }
 
-    return data.map(item => ({
+    // Then, search all available equipment for specifications matches
+    let allEquipmentQuery = supabase
+      .from('equipment')
+      .select(`
+        *,
+        categories(name, icon_name)
+      `)
+      .eq('status', 'available');
+
+    if (categoryId) {
+      allEquipmentQuery = allEquipmentQuery.eq('category_id', categoryId);
+    }
+
+    const { data: allData, error: allError } = await allEquipmentQuery;
+
+    if (allError) {
+      console.error('Error fetching all equipment for quote:', allError);
+      return [];
+    }
+
+    // Client-side filtering for specifications
+    const specMatches = (allData || []).filter((item: any) => {
+      if (!item.specifications) return false;
+
+      const queryWords = query.toLowerCase().split(' ').filter(word => word.length > 0);
+      if (queryWords.length === 0) return false;
+
+      // Create a searchable text from all specification keys and values
+      let specSearchText = '';
+      for (const key in item.specifications) {
+        if (item.specifications.hasOwnProperty(key)) {
+          const value = item.specifications[key];
+          specSearchText += ` ${key.toLowerCase()}`;
+          if (typeof value === 'string') {
+            specSearchText += ` ${value.toLowerCase()}`;
+          } else if (typeof value === 'number') {
+            specSearchText += ` ${value.toString()}`;
+          }
+        }
+      }
+
+      // Check if all query words are found in the specifications text
+      return queryWords.every(word => specSearchText.includes(word));
+    });
+
+    // Combine results and remove duplicates
+    const dbMatches = data || [];
+    const combinedResults = [...dbMatches, ...specMatches];
+    const uniqueResults = combinedResults.filter((item, index, self) => 
+      index === self.findIndex((t) => t.id === item.id)
+    );
+
+    return uniqueResults.map((item: any) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));

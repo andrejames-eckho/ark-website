@@ -257,7 +257,7 @@ const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
           />
           <input
             type="text"
-            placeholder="Search equipment..."
+            placeholder="Search equipment by name, description, or specifications..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);

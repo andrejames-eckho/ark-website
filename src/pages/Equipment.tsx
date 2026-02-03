@@ -274,7 +274,7 @@ const Equipment: React.FC = () => {
                             <Search style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} size={20} />
                             <input
                                 type="text"
-                                placeholder="Search inventory (e.g. 'Line Array', 'Moving Head', 'Mixer')..."
+                                placeholder="Search inventory by name, description, or specifications (e.g. 'Line Array', 'Stainless Steel', '250kg')..."
                                 value={searchQuery}
                                 onChange={(e) => {
                                     setSearchQuery(e.target.value);
