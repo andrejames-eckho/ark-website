@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, ChevronRight, Loader2, ArrowUpDown, X } from 'lucide-react';
+import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, X } from 'lucide-react';
 import { fetchEquipment, fetchCategories, searchEquipment, fetchEquipmentByCategory } from '../services/equipmentService';
 import { EquipmentWithCategory, Category } from '../types/equipment';
 import { getPlaceholderImage } from '../utils/imageHelper';
@@ -131,6 +131,30 @@ const Equipment: React.FC = () => {
         return text.substring(0, maxLength).trim() + '...';
     };
 
+    const formatSpecifications = (specifications?: Record<string, any>) => {
+        if (!specifications || Object.keys(specifications).length === 0) return null;
+        
+        return (
+            <div style={{ marginTop: 'var(--spacing-3)' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '4px' }}>
+                    Specifications:
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: '1.4' }}>
+                    {Object.entries(specifications).slice(0, 3).map(([key, value]) => (
+                        <div key={key} style={{ marginBottom: '2px' }}>
+                            <span style={{ fontWeight: 500 }}>{key}:</span> {String(value)}
+                        </div>
+                    ))}
+                    {Object.keys(specifications).length > 3 && (
+                        <div style={{ fontStyle: 'italic', color: 'var(--color-text-muted)' }}>
+                            +{Object.keys(specifications).length - 3} more specs
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     const openEquipmentModal = (equipment: EquipmentWithCategory) => {
         setSelectedEquipment(equipment);
         setIsModalOpen(true);
@@ -225,26 +249,35 @@ const Equipment: React.FC = () => {
                             </div>
                         )}
                         
+                        {equipment.specifications && Object.keys(equipment.specifications).length > 0 && (
+                            <div style={{ marginBottom: 'var(--spacing-6)' }}>
+                                <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
+                                    Specifications
+                                </h3>
+                                <div style={{ 
+                                    fontSize: '0.95rem', 
+                                    color: 'var(--color-text-muted)', 
+                                    lineHeight: '1.6',
+                                    backgroundColor: 'var(--color-surface)',
+                                    padding: 'var(--spacing-4)',
+                                    borderRadius: '6px',
+                                    border: '1px solid var(--color-border)'
+                                }}>
+                                    {Object.entries(equipment.specifications).map(([key, value]) => (
+                                        <div key={key} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                                            <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{key}:</span>
+                                            <span style={{ color: 'var(--color-text-muted)' }}>{String(value)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
                         <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
                             <button
                                 onClick={onClose}
                                 style={{
-                                    flex: 1,
-                                    padding: '14px 24px',
-                                    backgroundColor: 'transparent',
-                                    border: '1px solid var(--color-border)',
-                                    borderRadius: '6px',
-                                    color: 'var(--color-text)',
-                                    fontWeight: 600,
-                                    fontSize: '1rem',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Close
-                            </button>
-                            <button
-                                style={{
-                                    flex: 1,
+                                    width: '100%',
                                     padding: '14px 24px',
                                     backgroundColor: 'var(--color-primary)',
                                     border: 'none',
@@ -255,7 +288,7 @@ const Equipment: React.FC = () => {
                                     cursor: 'pointer'
                                 }}
                             >
-                                ADD TO QUOTE
+                                Close
                             </button>
                         </div>
                     </div>
@@ -429,14 +462,19 @@ const Equipment: React.FC = () => {
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 'var(--spacing-4)' }}>
                                 {equipmentItems.map((item) => (
-                                    <div key={item.id} className="gear-card" style={{
-                                        backgroundColor: 'var(--color-surface)',
-                                        border: '1px solid var(--color-border)',
-                                        borderRadius: '8px',
-                                        overflow: 'hidden',
-                                        transition: 'var(--transition-normal)',
-                                        cursor: 'pointer'
-                                    }}>
+                                    <div 
+                                        key={item.id} 
+                                        className="gear-card" 
+                                        style={{
+                                            backgroundColor: 'var(--color-surface)',
+                                            border: '1px solid var(--color-border)',
+                                            borderRadius: '8px',
+                                            overflow: 'hidden',
+                                            transition: 'var(--transition-normal)',
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={() => openEquipmentModal(item)}
+                                    >
                                         <div style={{ height: '200px', backgroundColor: '#000', overflow: 'hidden' }}>
                                             <img 
                                                 src={item.image_url || getPlaceholderImage(item.categories?.name || 'Equipment')} 
@@ -454,50 +492,19 @@ const Equipment: React.FC = () => {
                                                 {item.categories?.name || 'Uncategorized'}
                                             </span>
                                             <h4 style={{ margin: '4px 0 var(--spacing-4)', fontSize: '1.1rem' }}>{item.name}</h4>
-                                            <div style={{ minHeight: '60px', marginBottom: 'var(--spacing-4)' }}>
+                                            <div style={{ minHeight: '80px', marginBottom: 'var(--spacing-4)' }}>
                                                 {item.description && (
-                                                    <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: '1.4' }}>
-                                                        {truncateText(item.description, 100)}
-                                                        {item.description.length > 100 && (
-                                                            <button 
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    openEquipmentModal(item);
-                                                                }}
-                                                                style={{
-                                                                    background: 'none',
-                                                                    border: 'none',
-                                                                    color: 'var(--color-primary)',
-                                                                    cursor: 'pointer',
-                                                                    fontSize: '0.85rem',
-                                                                    fontWeight: 600,
-                                                                    padding: '0',
-                                                                    marginLeft: '4px',
-                                                                    textDecoration: 'underline'
-                                                                }}
-                                                            >
-                                                                See more
-                                                            </button>
+                                                    <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: '1.4', marginBottom: 'var(--spacing-2)' }}>
+                                                        {truncateText(item.description, 60)}
+                                                        {item.description.length > 60 && (
+                                                            <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.85rem' }}>
+                                                                {' '}See more
+                                                            </span>
                                                         )}
                                                     </div>
                                                 )}
+                                                {formatSpecifications(item.specifications)}
                                             </div>
-                                            <button style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                backgroundColor: 'transparent',
-                                                border: '1px solid var(--color-border)',
-                                                borderRadius: '4px',
-                                                color: 'var(--color-text)',
-                                                fontWeight: 600,
-                                                fontSize: '0.9rem',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                gap: '8px'
-                                            }}>
-                                                ADD TO QUOTE <ChevronRight size={16} />
-                                            </button>
                                         </div>
                                     </div>
                                 ))}
