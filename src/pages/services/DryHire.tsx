@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Settings, ShieldCheck, Truck, Headphones, Activity } from 'lucide-react';
 
-const DryHire: React.FC = () => {
+const DryHire: React.FC<{ onOpenQuoteForm?: () => void }> = ({ onOpenQuoteForm }) => {
+    const navigate = useNavigate();
     return (
         <div className="page-transition">
             {/* Hero Section */}
@@ -56,24 +58,30 @@ const DryHire: React.FC = () => {
                     <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-8)', maxWidth: '600px', margin: '0 auto var(--spacing-8)' }}>
                         From L-Acoustics arrays to MA Lighting consoles, our inventory is curated for peak performance in mission-critical environments.
                     </p>
-                    <button style={{
-                        border: '2px solid var(--color-primary)',
-                        color: 'var(--color-primary)',
-                        padding: '14px 40px',
-                        borderRadius: '4px',
-                        fontWeight: 800,
-                        fontSize: '1rem',
-                        textTransform: 'uppercase'
-                    }}>BROWSE GEAR INVENTORY</button>
-                    <button style={{
-                        marginLeft: 'var(--spacing-4)',
-                        backgroundColor: 'var(--color-primary)',
-                        color: '#000',
-                        padding: '16px 48px',
-                        borderRadius: '4px',
-                        fontWeight: 800,
-                        fontSize: '1.1rem'
-                    }}>BUILD YOUR QUOTE</button>
+                    <button 
+                        onClick={() => navigate('/equipment')}
+                        style={{
+                            border: '2px solid var(--color-primary)',
+                            color: 'var(--color-primary)',
+                            padding: '14px 40px',
+                            borderRadius: '4px',
+                            fontWeight: 800,
+                            fontSize: '1rem',
+                            textTransform: 'uppercase',
+                            cursor: 'pointer'
+                        }}>BROWSE GEAR INVENTORY</button>
+                    <button 
+                        onClick={onOpenQuoteForm}
+                        style={{
+                            marginLeft: 'var(--spacing-4)',
+                            backgroundColor: 'var(--color-primary)',
+                            color: '#000',
+                            padding: '16px 48px',
+                            borderRadius: '4px',
+                            fontWeight: 800,
+                            fontSize: '1.1rem',
+                            cursor: 'pointer'
+                        }}>BUILD YOUR QUOTE</button>
                 </div>
             </section>
         </div>

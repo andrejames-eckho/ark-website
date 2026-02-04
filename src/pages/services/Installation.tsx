@@ -1,7 +1,7 @@
 import React from 'react';
 import { Zap, Layout, HardDrive, Cpu } from 'lucide-react';
 
-const Installation: React.FC = () => {
+const Installation: React.FC<{ onOpenQuoteForm?: () => void }> = ({ onOpenQuoteForm }) => {
     return (
         <div className="page-transition">
             {/* Hero Section */}
@@ -90,14 +90,17 @@ const Installation: React.FC = () => {
             <section style={{ padding: 'var(--spacing-12) 0', textAlign: 'center' }}>
                 <div className="container">
                     <h2 style={{ fontSize: '2rem', marginBottom: 'var(--spacing-6)' }}>CONSULT WITH OUR <span style={{ color: 'var(--color-primary)' }}>SYSTEM DESIGNERS</span></h2>
-                    <button style={{
-                        backgroundColor: 'var(--color-primary)',
-                        color: '#000',
-                        padding: '16px 48px',
-                        borderRadius: '4px',
-                        fontWeight: 800,
-                        fontSize: '1.1rem'
-                    }}>REQUEST A SITE VISIT</button>
+                    <button 
+                        onClick={onOpenQuoteForm}
+                        style={{
+                            backgroundColor: 'var(--color-primary)',
+                            color: '#000',
+                            padding: '16px 48px',
+                            borderRadius: '4px',
+                            fontWeight: 800,
+                            fontSize: '1.1rem',
+                            cursor: 'pointer'
+                        }}>REQUEST A SITE VISIT</button>
                 </div>
             </section>
         </div>

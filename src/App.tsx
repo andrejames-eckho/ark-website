@@ -45,10 +45,10 @@ const App: React.FC = () => {
                         <Route path="/about" element={<About />} />
                         <Route path="/equipment" element={<Equipment />} />
                         <Route path="/services" element={<Services onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
-                        <Route path="/services/full-production" element={<FullProduction />} />
-                        <Route path="/services/dry-hire" element={<DryHire />} />
-                        <Route path="/services/installation" element={<Installation />} />
-                        <Route path="/services/broadcast-led" element={<BroadcastLED />} />
+                        <Route path="/services/full-production" element={<FullProduction onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
+                        <Route path="/services/dry-hire" element={<DryHire onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
+                        <Route path="/services/installation" element={<Installation onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
+                        <Route path="/services/broadcast-led" element={<BroadcastLED onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
                         
                         {/* Admin Routes */}
                         <Route path="/admin/login" element={<AdminLogin />} />

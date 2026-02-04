@@ -1,7 +1,7 @@
 import React from 'react';
 import { Camera, Monitor, Cpu, Globe, Play } from 'lucide-react';
 
-const BroadcastLED: React.FC = () => {
+const BroadcastLED: React.FC<{ onOpenQuoteForm?: () => void }> = ({ onOpenQuoteForm }) => {
     return (
         <div className="page-transition">
             {/* Hero Section */}
@@ -112,14 +112,17 @@ const BroadcastLED: React.FC = () => {
             <section style={{ padding: 'var(--spacing-12) 0', textAlign: 'center' }}>
                 <div className="container">
                     <h2 style={{ fontSize: '2rem', marginBottom: 'var(--spacing-6)' }}>WANT TO MAKE A <span style={{ color: 'var(--color-primary)' }}>VISUAL IMPACT?</span></h2>
-                    <button style={{
-                        backgroundColor: 'var(--color-primary)',
-                        color: '#000',
-                        padding: '16px 48px',
-                        borderRadius: '4px',
-                        fontWeight: 800,
-                        fontSize: '1.1rem'
-                    }}>CONSULT WITH A VIDEO ENGINEER</button>
+                    <button 
+                        onClick={onOpenQuoteForm}
+                        style={{
+                            backgroundColor: 'var(--color-primary)',
+                            color: '#000',
+                            padding: '16px 48px',
+                            borderRadius: '4px',
+                            fontWeight: 800,
+                            fontSize: '1.1rem',
+                            cursor: 'pointer'
+                        }}>CONSULT WITH A VIDEO ENGINEER</button>
                 </div>
             </section>
         </div>

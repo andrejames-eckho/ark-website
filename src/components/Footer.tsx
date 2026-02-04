@@ -37,7 +37,6 @@ const Footer: React.FC = () => {
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>COMPANY</h4>
                         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
                             <li><Link to="/about">Our Story</Link></li>
-                            <li><a href="#">Contact Us</a></li>
                         </ul>
                     </div>
                     <div>

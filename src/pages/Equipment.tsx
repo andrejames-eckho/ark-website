@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, X } from 'lucide-react';
+import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, X, ChevronDown } from 'lucide-react';
 import { fetchEquipment, fetchCategories, searchEquipment, fetchEquipmentByCategory } from '../services/equipmentService';
 import { EquipmentWithCategory, Category } from '../types/equipment';
 import { getPlaceholderImage } from '../utils/imageHelper';
@@ -398,8 +398,14 @@ const Equipment: React.FC = () => {
             </section>
 
             <div className="container" style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: 'var(--spacing-8)', padding: 'var(--spacing-8) 0' }}>
-                {/* Categories Sidebar */}
-                <aside>
+                {/* Categories Sidebar - Desktop */}
+                <aside className="categories-sidebar-desktop" style={{
+                    position: 'sticky',
+                    top: '80px',
+                    height: 'fit-content',
+                    maxHeight: 'calc(100vh - 100px)',
+                    overflowY: 'auto'
+                }}>
                     <h3 style={{ marginBottom: 'var(--spacing-4)', fontSize: '1rem', color: 'var(--color-text-muted)' }}>CATEGORIES</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <button 
@@ -454,6 +460,61 @@ const Equipment: React.FC = () => {
                         })}
                     </div>
                 </aside>
+
+                {/* Mobile Categories Dropdown */}
+                <div className="categories-dropdown-mobile" style={{
+                    display: 'none',
+                    marginBottom: 'var(--spacing-4)',
+                    position: 'sticky',
+                    top: '60px',
+                    zIndex: 10
+                }}>
+                    <div style={{ position: 'relative' }}>
+                        <select
+                            value={selectedCategory || 'all'}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === 'all') {
+                                    setSelectedCategory(null);
+                                } else {
+                                    setSelectedCategory(parseInt(value));
+                                }
+                                setSearchQuery('');
+                            }}
+                            style={{
+                                appearance: 'none',
+                                width: '100%',
+                                padding: '16px 40px 16px 16px',
+                                borderRadius: '8px',
+                                backgroundColor: 'var(--color-surface)',
+                                border: '1px solid var(--color-border)',
+                                color: 'var(--color-text)',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                outline: 'none'
+                            }}
+                        >
+                            <option value="all">All Categories ({allEquipmentItems.length})</option>
+                            {categories.map((cat) => (
+                                <option key={cat.id} value={cat.id}>
+                                    {cat.name} ({getCategoryCount(cat.id)})
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown 
+                            style={{ 
+                                position: 'absolute', 
+                                right: '16px', 
+                                top: '50%', 
+                                transform: 'translateY(-50%)', 
+                                color: 'var(--color-text-muted)',
+                                pointerEvents: 'none'
+                            }} 
+                            size={20} 
+                        />
+                    </div>
+                </div>
 
                 {/* Equipment Grid */}
                 <main>

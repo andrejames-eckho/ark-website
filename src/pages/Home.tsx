@@ -103,13 +103,33 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                 />
                 
                 <div className="container">
-                    <h1 style={{ fontSize: '4rem', marginBottom: 'var(--spacing-2)', maxWidth: '800px', margin: '0 auto var(--spacing-2)' }}>
+                    <h1 style={{ 
+                        fontSize: 'clamp(2rem, 8vw, 4rem)', 
+                        marginBottom: 'var(--spacing-2)', 
+                        maxWidth: '800px', 
+                        margin: '0 auto var(--spacing-2)',
+                        lineHeight: 1.1
+                    }}>
                         PRO GEAR. <br /> <span style={{ color: 'var(--color-primary)' }}>PROFESSIONAL RESULTS.</span>
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)', maxWidth: '600px', margin: '0 auto var(--spacing-6)' }}>
+                    <p style={{ 
+                        fontSize: 'clamp(1rem, 4vw, 1.25rem)', 
+                        color: 'var(--color-text-muted)', 
+                        marginBottom: 'var(--spacing-6)', 
+                        maxWidth: '600px', 
+                        margin: '0 auto var(--spacing-6)',
+                        lineHeight: 1.5
+                    }}>
                         Empowering your events with world-class audio, lighting, and production equipment.
                     </p>
-                    <div style={{ display: 'flex', gap: 'var(--spacing-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ 
+                        display: 'flex', 
+                        gap: 'var(--spacing-3)', 
+                        justifyContent: 'center', 
+                        flexWrap: 'wrap',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                    }}>
                         <Link 
                             to="/equipment"
                             style={{
@@ -118,7 +138,7 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                                 padding: '16px 32px',
                                 borderRadius: '4px',
                                 fontWeight: 800,
-                                fontSize: '1.1rem',
+                                fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
                                 cursor: 'pointer',
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.05em',
@@ -126,7 +146,10 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '8px',
-                                textDecoration: 'none'
+                                textDecoration: 'none',
+                                width: '100%',
+                                maxWidth: '300px',
+                                justifyContent: 'center'
                             }}
                             onMouseOver={(e) => {
                                 e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
@@ -148,14 +171,17 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                                 padding: '14px 32px',
                                 borderRadius: '4px',
                                 fontWeight: 800,
-                                fontSize: '1.1rem',
+                                fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
                                 cursor: 'pointer',
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.05em',
                                 transition: 'var(--transition-fast)',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '8px'
+                                gap: '8px',
+                                width: '100%',
+                                maxWidth: '300px',
+                                justifyContent: 'center'
                             }}
                             onMouseOver={(e) => {
                                 e.currentTarget.style.backgroundColor = 'var(--color-primary)';
@@ -197,7 +223,7 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                     ) : (
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
                             gap: 'var(--spacing-3)'
                         }}>
                             {categories.map((cat) => {
