@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react';
 
 const Footer: React.FC = () => {
     return (
@@ -46,6 +46,20 @@ const Footer: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={16} /> mac2arkproaudio@gmail.com</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={16} /> +63 917 316 8388</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} /> 7th street, Lawaan Village, Iloilo City, Philippines</div>
+                            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                                <a href="https://www.facebook.com/ARKproaudioandlights" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                                    <Facebook size={18} />
+                                    <span>Facebook</span>
+                                </a>
+                                <a href="https://www.instagram.com/arkpro.official/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                                    <Instagram size={18} />
+                                    <span>Instagram</span>
+                                </a>
+                                <a href="https://wa.me/639173168388" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                                    <MessageCircle size={18} />
+                                    <span>WhatsApp</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
