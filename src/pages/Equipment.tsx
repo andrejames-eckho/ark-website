@@ -14,7 +14,7 @@ const Equipment: React.FC = () => {
     const [allEquipmentItems, setAllEquipmentItems] = useState<EquipmentWithCategory[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-    const [sortOption, setSortOption] = useState<'default' | 'name-asc' | 'name-desc'>('default');
+    const [sortOption, setSortOption] = useState<'default' | 'name-asc' | 'name-desc'>('name-asc');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedEquipment, setSelectedEquipment] = useState<EquipmentWithCategory | null>(null);

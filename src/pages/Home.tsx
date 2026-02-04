@@ -63,9 +63,45 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                 minHeight: '80vh',
                 display: 'flex',
                 alignItems: 'center',
-                background: 'linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("/hero.png") center/cover',
+                position: 'relative',
                 textAlign: 'center'
             }}>
+                {/* Video Background */}
+                <video
+                    className="hero-video"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    poster="/hero.png"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        zIndex: -2
+                    }}
+                >
+                    <source src="/hero_video.mp4" type="video/mp4" />
+                    {/* Fallback for browsers that don't support video */}
+                    Your browser does not support the video tag.
+                </video>
+                
+                {/* Overlay for text readability */}
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7))',
+                        zIndex: -1
+                    }}
+                />
+                
                 <div className="container">
                     <h1 style={{ fontSize: '4rem', marginBottom: 'var(--spacing-2)', maxWidth: '800px', margin: '0 auto var(--spacing-2)' }}>
                         PRO GEAR. <br /> <span style={{ color: 'var(--color-primary)' }}>PROFESSIONAL RESULTS.</span>
