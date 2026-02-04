@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import Layout from './components/Layout';
 import Header from './components/Header';
 import QuoteForm from './components/QuoteForm';
@@ -40,10 +41,10 @@ const App: React.FC = () => {
                 <Header onOpenQuoteForm={() => setShowQuoteForm(true)} />
                 <Layout>
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Home onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/equipment" element={<Equipment />} />
-                        <Route path="/services" element={<Services />} />
+                        <Route path="/services" element={<Services onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
                         <Route path="/services/full-production" element={<FullProduction />} />
                         <Route path="/services/dry-hire" element={<DryHire />} />
                         <Route path="/services/installation" element={<Installation />} />
@@ -66,7 +67,10 @@ const App: React.FC = () => {
                 </Layout>
                 
                 {/* Quote Form Modal - rendered at App level for full-screen overlay */}
-                {showQuoteForm && <QuoteForm onClose={() => setShowQuoteForm(false)} />}
+                {showQuoteForm && createPortal(
+                    <QuoteForm onClose={() => setShowQuoteForm(false)} />,
+                    document.body
+                )}
             </Router>
         </AuthProvider>
     );

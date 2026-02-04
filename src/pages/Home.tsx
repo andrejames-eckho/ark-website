@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Search, ChevronRight, Speaker, Lightbulb, TowerControl as Rigging } from 'lucide-react';
-import QuoteForm from '../components/QuoteForm';
 
-const Home: React.FC = () => {
-    const [showQuoteForm, setShowQuoteForm] = useState(false);
+interface HomeProps {
+    onOpenQuoteForm: () => void;
+}
+
+const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
 
     return (
         <>
@@ -23,36 +26,67 @@ const Home: React.FC = () => {
                     <p style={{ fontSize: '1.25rem', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)', maxWidth: '600px', margin: '0 auto var(--spacing-6)' }}>
                         Empowering your events with world-class audio, lighting, and production equipment.
                     </p>
-
-                    {/* Sharegrid inspired search */}
-                    <div className="search-bar" style={{
-                        maxWidth: '700px',
-                        margin: '0 auto',
-                        backgroundColor: '#fff',
-                        borderRadius: '8px',
-                        padding: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.3)'
-                    }}>
-                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '0 16px' }}>
-                            <Search size={20} color="#666" />
-                            <input type="text" placeholder="Search for speakers, mixers, lights..." style={{
-                                width: '100%',
-                                padding: '16px',
-                                border: 'none',
-                                outline: 'none',
-                                fontSize: '1rem',
-                                color: '#000'
-                            }} />
-                        </div>
-                        <button style={{
-                            backgroundColor: 'var(--color-primary)',
-                            color: '#000',
-                            padding: '16px 32px',
-                            borderRadius: '4px',
-                            fontWeight: 700
-                        }}>SEARCH</button>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <Link 
+                            to="/equipment"
+                            style={{
+                                backgroundColor: 'var(--color-primary)',
+                                color: '#000',
+                                padding: '16px 32px',
+                                borderRadius: '4px',
+                                fontWeight: 800,
+                                fontSize: '1.1rem',
+                                cursor: 'pointer',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                transition: 'var(--transition-fast)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                textDecoration: 'none'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                            }}
+                        >
+                            CHECKOUT OUR EQUIPMENT <ChevronRight size={20} />
+                        </Link>
+                        <button
+                            onClick={onOpenQuoteForm}
+                            style={{
+                                backgroundColor: 'transparent',
+                                border: '2px solid var(--color-primary)',
+                                color: 'var(--color-primary)',
+                                padding: '14px 32px',
+                                borderRadius: '4px',
+                                fontWeight: 800,
+                                fontSize: '1.1rem',
+                                cursor: 'pointer',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                transition: 'var(--transition-fast)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                                e.currentTarget.style.color = '#000';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.color = 'var(--color-primary)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                            }}
+                        >
+                            GET A QUOTE
+                        </button>
                     </div>
                 </div>
             </section>
@@ -150,7 +184,7 @@ const Home: React.FC = () => {
                     </p>
                     <div style={{ display: 'flex', gap: 'var(--spacing-2)', justifyContent: 'center' }}>
                         <button
-                            onClick={() => setShowQuoteForm(true)}
+                            onClick={onOpenQuoteForm}
                             style={{
                                 backgroundColor: '#000',
                                 color: '#fff',
@@ -173,9 +207,6 @@ const Home: React.FC = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Quote Form Modal */}
-            {showQuoteForm && <QuoteForm onClose={() => setShowQuoteForm(false)} />}
         </>
     );
 };

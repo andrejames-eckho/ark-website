@@ -1,4 +1,5 @@
 import React, { useState, FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import EquipmentSelector from './EquipmentSelector';
 
@@ -206,19 +207,20 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
     // Success view
     if (submitStatus === 'success') {
-        return (
+        return createPortal(
             <div style={{
                 position: 'fixed',
                 top: 0,
                 left: 0,
-                right: 0,
-                bottom: 0,
+                width: '100vw',
+                height: '100vh',
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 zIndex: 9999,
-                padding: '20px'
+                padding: '20px',
+                boxSizing: 'border-box'
             }}>
                 <div style={{
                     backgroundColor: 'var(--color-surface)',
@@ -251,25 +253,26 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
                         Our team will contact you shortly with a custom quote for your event.
                     </p>
                 </div>
-            </div>
+            </div>,
+            document.body
         );
     }
 
     // Form view
-    return (
+    return createPortal(
         <div style={{
             position: 'fixed',
             top: 0,
             left: 0,
-            right: 0,
-            bottom: 0,
+            width: '100vw',
+            height: '100vh',
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 9999,
             padding: '20px',
-            overflowY: 'auto'
+            boxSizing: 'border-box'
         }}>
             <div style={{
                 backgroundColor: 'var(--color-surface)',
@@ -552,7 +555,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
                     </button>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

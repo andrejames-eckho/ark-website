@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Camera, Music, Zap, Settings, ArrowRight } from 'lucide-react';
 
-const Services: React.FC = () => {
+interface ServicesProps {
+    onOpenQuoteForm: () => void;
+}
+
+const Services: React.FC<ServicesProps> = ({ onOpenQuoteForm }) => {
     const services = [
         {
             title: 'Full Production Services',
@@ -113,14 +117,17 @@ const Services: React.FC = () => {
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto var(--spacing-8)' }}>
                         Our engineering team specializes in custom technical solutions for complex environments. Let's build something extraordinary together.
                     </p>
-                    <button style={{
-                        backgroundColor: 'var(--color-primary)',
-                        color: '#000',
-                        padding: '16px 48px',
-                        borderRadius: '4px',
-                        fontWeight: 800,
-                        fontSize: '1.1rem'
-                    }}>CONSULT WITH AN EXPERT</button>
+                    <button 
+                        onClick={onOpenQuoteForm}
+                        style={{
+                            backgroundColor: 'var(--color-primary)',
+                            color: '#000',
+                            padding: '16px 48px',
+                            borderRadius: '4px',
+                            fontWeight: 800,
+                            fontSize: '1.1rem',
+                            cursor: 'pointer'
+                        }}>CONSULT WITH AN EXPERT</button>
                 </div>
             </section>
         </div>
