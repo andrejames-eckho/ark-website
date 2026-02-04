@@ -18,10 +18,10 @@ const Footer: React.FC = () => {
                     <div>
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>EQUIPMENT</h4>
                         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                            <li><Link to="/equipment">Audio Rental</Link></li>
-                            <li><Link to="/equipment">Lighting Rental</Link></li>
-                            <li><Link to="/equipment">LED & Video</Link></li>
-                            <li><Link to="/equipment">Rigging Solutions</Link></li>
+                            <li><Link to="/equipment?category=1">Audio Rental</Link></li>
+                            <li><Link to="/equipment?category=2">Lighting Rental</Link></li>
+                            <li><Link to="/equipment?category=3">LED & Video</Link></li>
+                            <li><Link to="/equipment?category=4">Rigging Solutions</Link></li>
                         </ul>
                     </div>
                     <div>

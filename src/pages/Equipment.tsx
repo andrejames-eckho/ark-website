@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, X } from 'lucide-react';
 import { fetchEquipment, fetchCategories, searchEquipment, fetchEquipmentByCategory } from '../services/equipmentService';
 import { EquipmentWithCategory, Category } from '../types/equipment';
 import { getPlaceholderImage } from '../utils/imageHelper';
 
 const Equipment: React.FC = () => {
+    const [searchParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState('');
     const [equipmentItems, setEquipmentItems] = useState<EquipmentWithCategory[]>([]);
     const [unsortedEquipmentItems, setUnsortedEquipmentItems] = useState<EquipmentWithCategory[]>([]);
@@ -23,16 +25,30 @@ const Equipment: React.FC = () => {
         loadData();
     }, []);
 
+    // Handle URL parameter changes
+    useEffect(() => {
+        const categoryParam = searchParams.get('category');
+        if (categoryParam) {
+            const categoryId = parseInt(categoryParam);
+            setSelectedCategory(categoryId);
+        } else {
+            setSelectedCategory(null);
+        }
+    }, [searchParams]);
+
     // Load data whenever category, search, or sort changes
     useEffect(() => {
-        if (selectedCategory !== null) {
-            loadEquipmentByCategory(selectedCategory);
-        } else if (searchQuery) {
-            searchEquipmentData(searchQuery);
-        } else {
-            loadAllEquipment();
+        // Only run this effect after initial data is loaded
+        if (categories.length > 0) {
+            if (selectedCategory !== null) {
+                loadEquipmentByCategory(selectedCategory);
+            } else if (searchQuery) {
+                searchEquipmentData(searchQuery);
+            } else {
+                loadAllEquipment();
+            }
         }
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery, categories.length]);
 
     // Apply sorting whenever sort option or unsorted items change
     useEffect(() => {
@@ -51,8 +67,13 @@ const Equipment: React.FC = () => {
             ]);
             
             setCategories(categoriesData);
-            setUnsortedEquipmentItems(equipmentData);
             setAllEquipmentItems(equipmentData);
+            
+            // Only set equipment items if no category is pre-selected
+            const categoryParam = searchParams.get('category');
+            if (!categoryParam) {
+                setUnsortedEquipmentItems(equipmentData);
+            }
         } catch (err) {
             setError('Failed to load equipment data');
             console.error('Error loading data:', err);

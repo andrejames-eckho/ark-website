@@ -1,12 +1,59 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Search, ChevronRight, Speaker, Lightbulb, TowerControl as Rigging } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronRight, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2 } from 'lucide-react';
+import { fetchCategories, fetchEquipment } from '../services/equipmentService';
+import { Category, EquipmentWithCategory } from '../types/equipment';
 
 interface HomeProps {
     onOpenQuoteForm: () => void;
 }
 
 const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [equipmentItems, setEquipmentItems] = useState<EquipmentWithCategory[]>([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    // Load data on component mount
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = async () => {
+        setLoading(true);
+        try {
+            const [categoriesData, equipmentData] = await Promise.all([
+                fetchCategories(),
+                fetchEquipment()
+            ]);
+            
+            setCategories(categoriesData);
+            setEquipmentItems(equipmentData);
+        } catch (err) {
+            console.error('Error loading data:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getCategoryIcon = (iconName: string) => {
+        const icons: Record<string, React.ComponentType<any>> = {
+            'Speaker': Speaker,
+            'Lightbulb': Lightbulb,
+            'Rigging': Rigging,
+            'Video': Video,
+            'Monitor': Monitor,
+        };
+        return icons[iconName] || Video;
+    };
+
+    const getCategoryCount = (categoryId: number) => {
+        return equipmentItems.filter(item => item.category_id === categoryId).length;
+    };
+
+    const handleCategoryClick = (categoryId: number) => {
+        navigate(`/equipment?category=${categoryId}`);
+    };
 
     return (
         <>
@@ -99,51 +146,71 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                             <h2 style={{ fontSize: '2rem' }}>BROWSE <span style={{ color: 'var(--color-primary)' }}>BY CATEGORY</span></h2>
                             <p style={{ color: 'var(--color-text-muted)' }}>The best gear in the industry, ready for your next event.</p>
                         </div>
-                        <a href="#" style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                        <Link 
+                            to="/equipment" 
+                            style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, textDecoration: 'none' }}
+                        >
                             VIEW ALL EQUIPMENT <ChevronRight size={18} />
-                        </a>
+                        </Link>
                     </div>
 
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: 'var(--spacing-3)'
-                    }}>
-                        {[
-                            { name: 'Audio', icon: <Speaker />, count: '450+ Items' },
-                            { name: 'Lighting', icon: <Lightbulb />, count: '320+ Items' },
-                            { name: 'Rigging', icon: <Rigging />, count: '120+ Items' },
-                            { name: 'Video', icon: <Search />, count: '85+ Items' },
-                            { name: 'Monitors', icon: <Search />, count: '50+ Items' },
-                            { name: 'Projection', icon: <Search />, count: '40+ Items' }
-                        ].map((cat, i) => (
-                            <div key={i} className="category-card" style={{
-                                backgroundColor: 'var(--color-surface)',
-                                padding: 'var(--spacing-4)',
-                                borderRadius: '8px',
-                                border: '1px solid var(--color-border)',
-                                transition: 'var(--transition-normal)',
-                                cursor: 'pointer',
-                                position: 'relative',
-                                overflow: 'hidden'
-                            }}>
-                                <div style={{ color: 'var(--color-primary)', marginBottom: 'var(--spacing-2)' }}>
-                                    {cat.icon}
-                                </div>
-                                <h3 style={{ fontSize: '1.25rem', marginBottom: '4px' }}>{cat.name}</h3>
-                                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{cat.count}</p>
-                                <div style={{
-                                    position: 'absolute',
-                                    bottom: 'var(--spacing-4)',
-                                    right: 'var(--spacing-4)',
-                                    opacity: 0,
-                                    transition: 'var(--transition-fast)'
-                                }}>
-                                    <ChevronRight size={20} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-8)' }}>
+                            <Loader2 className="animate-spin" size={32} color="var(--color-primary)" />
+                        </div>
+                    ) : (
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                            gap: 'var(--spacing-3)'
+                        }}>
+                            {categories.map((cat) => {
+                                const IconComponent = getCategoryIcon(cat.icon_name);
+                                const count = getCategoryCount(cat.id);
+                                
+                                return (
+                                    <div 
+                                        key={cat.id} 
+                                        className="category-card" 
+                                        style={{
+                                            backgroundColor: 'var(--color-surface)',
+                                            padding: 'var(--spacing-4)',
+                                            borderRadius: '8px',
+                                            border: '1px solid var(--color-border)',
+                                            transition: 'var(--transition-normal)',
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}
+                                        onClick={() => handleCategoryClick(cat.id)}
+                                        onMouseOver={(e) => {
+                                            e.currentTarget.style.transform = 'translateY(-4px)';
+                                            e.currentTarget.style.borderColor = 'var(--color-primary)';
+                                        }}
+                                        onMouseOut={(e) => {
+                                            e.currentTarget.style.transform = 'translateY(0)';
+                                            e.currentTarget.style.borderColor = 'var(--color-border)';
+                                        }}
+                                    >
+                                        <div style={{ color: 'var(--color-primary)', marginBottom: 'var(--spacing-2)' }}>
+                                            <IconComponent size={32} />
+                                        </div>
+                                        <h3 style={{ fontSize: '1.25rem', marginBottom: '4px' }}>{cat.name}</h3>
+                                        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{count} Items</p>
+                                        <div style={{
+                                            position: 'absolute',
+                                            bottom: 'var(--spacing-4)',
+                                            right: 'var(--spacing-4)',
+                                            opacity: 0,
+                                            transition: 'var(--transition-fast)'
+                                        }}>
+                                            <ChevronRight size={20} />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             </section>
 
@@ -195,15 +262,6 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                                 cursor: 'pointer'
                             }}
                         >GET A QUOTE NOW</button>
-                        <button style={{
-                            backgroundColor: 'transparent',
-                            border: '2px solid #000',
-                            color: '#000',
-                            padding: '16px 40px',
-                            borderRadius: '4px',
-                            fontWeight: 800,
-                            fontSize: '1.1rem'
-                        }}>CALL OUR EXPERTS</button>
                     </div>
                 </div>
             </section>
