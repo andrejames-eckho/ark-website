@@ -27,6 +27,30 @@ export const fetchEquipment = async (): Promise<EquipmentWithCategory[]> => {
   }
 };
 
+export const fetchAllEquipment = async (): Promise<EquipmentWithCategory[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .select(`
+        *,
+        categories(name, icon_name)
+      `);
+
+    if (error) {
+      console.error('Error fetching all equipment:', error);
+      return [];
+    }
+
+    return data.map(item => ({
+      ...item,
+      image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
+    }));
+  } catch (error) {
+    console.error('Unexpected error fetching all equipment:', error);
+    return [];
+  }
+};
+
 export const fetchCategories = async (): Promise<Category[]> => {
   try {
     const { data, error } = await supabase

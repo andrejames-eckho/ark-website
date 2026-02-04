@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { EquipmentWithCategory, Category } from '../../types/equipment';
-import { fetchEquipment, fetchCategories } from '../../services/equipmentService';
+import { fetchAllEquipment, fetchCategories } from '../../services/equipmentService';
 import { Package, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
   const loadDashboardData = async () => {
     try {
       const [equipmentData, categoriesData] = await Promise.all([
-        fetchEquipment(),
+        fetchAllEquipment(),
         fetchCategories()
       ]);
       setEquipment(equipmentData);

@@ -10,12 +10,12 @@ const AdminLoginPage: React.FC = () => {
   // Redirect to admin dashboard if already logged in as admin
   React.useEffect(() => {
     if (isAdmin) {
-      navigate('/admin');
+      navigate('/backstage-access');
     }
   }, [isAdmin, navigate]);
 
   const handleLoginSuccess = () => {
-    navigate('/admin');
+    navigate('/backstage-access');
   };
 
   return <Login onSuccess={handleLoginSuccess} />;

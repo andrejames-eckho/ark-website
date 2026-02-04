@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { EquipmentWithCategory, Category } from '../../types/equipment';
-import { fetchEquipment, fetchCategories, deleteEquipment } from '../../services/equipmentService';
+import { fetchAllEquipment, fetchCategories, deleteEquipment } from '../../services/equipmentService';
 import { Search, Plus, Edit, Trash2, Loader2, Filter } from 'lucide-react';
 import EquipmentForm from './EquipmentForm';
 
@@ -27,7 +27,7 @@ const EquipmentManager: React.FC = () => {
     setLoading(true);
     try {
       const [equipmentData, categoriesData] = await Promise.all([
-        fetchEquipment(),
+        fetchAllEquipment(),
         fetchCategories()
       ]);
       setEquipment(equipmentData);

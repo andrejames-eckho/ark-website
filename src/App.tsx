@@ -25,7 +25,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const { user, isAdmin } = useAuth();
   
   if (!user || !isAdmin) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/backstage-access/login" replace />;
   }
   
   return <>{children}</>;
@@ -51,8 +51,8 @@ const App: React.FC = () => {
                         <Route path="/services/broadcast-led" element={<BroadcastLED onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
                         
                         {/* Admin Routes */}
-                        <Route path="/admin/login" element={<AdminLogin />} />
-                        <Route path="/admin" element={
+                        <Route path="/backstage-access/login" element={<AdminLogin />} />
+                        <Route path="/backstage-access" element={
                             <ProtectedRoute>
                                 <AdminLayout />
                             </ProtectedRoute>

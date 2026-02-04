@@ -15,7 +15,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   // Redirect if not admin
   React.useEffect(() => {
     if (!user || !isAdmin) {
-      navigate('/admin/login');
+      navigate('/backstage-access/login');
     }
   }, [user, isAdmin, navigate]);
 
@@ -26,12 +26,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const menuItems = [
     {
-      path: '/admin',
+      path: '/backstage-access',
       label: 'Dashboard',
       icon: Home
     },
     {
-      path: '/admin/equipment',
+      path: '/backstage-access/equipment',
       label: 'Equipment',
       icon: Package
     }
@@ -87,7 +87,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             {menuItems.map((item) => {
               const IconComponent = item.icon;
               const isActive = location.pathname === item.path || 
-                             (item.path !== '/admin' && location.pathname.startsWith(item.path));
+                             (item.path !== '/backstage-access' && location.pathname.startsWith(item.path));
               
               return (
                 <button
@@ -195,7 +195,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             }}>
               {menuItems.find(item => 
                 item.path === location.pathname || 
-                (item.path !== '/admin' && location.pathname.startsWith(item.path))
+                (item.path !== '/backstage-access' && location.pathname.startsWith(item.path))
               )?.label || 'Admin'}
             </h2>
           </div>

@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
                     <Link to="/about" style={{ fontWeight: 500, fontSize: '0.9rem' }}>ABOUT</Link>
                     {isAdmin && (
                         <Link 
-                            to="/admin" 
+                            to="/backstage-access" 
                             style={{ 
                                 fontWeight: 500, 
                                 fontSize: '0.9rem',
@@ -101,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
                         <Link to="/about" style={{ fontWeight: 500, fontSize: '1rem', padding: 'var(--spacing-2) 0' }}>ABOUT</Link>
                         {isAdmin && (
                             <Link 
-                                to="/admin" 
+                                to="/backstage-access" 
                                 style={{ 
                                     fontWeight: 500, 
                                     fontSize: '1rem',
