@@ -22,8 +22,12 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
             padding: 'var(--spacing-2) 0'
         }}>
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Link to="/" className="logo" style={{ fontSize: '1.5rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ color: 'var(--color-primary)' }}>ARK</span> PRO Audio and Lights
+                <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+                    <img 
+                        src="/logo.png" 
+                        alt="ARK PRO Audio and Lights" 
+                        style={{ height: '40px', width: 'auto' }}
+                    />
                 </Link>
                 
                 {/* Desktop Navigation */}
