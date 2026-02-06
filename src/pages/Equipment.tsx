@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, X, ChevronDown } from 'lucide-react';
+import { Search, Filter, Speaker, Lightbulb, TowerControl as Rigging, Monitor, Video, Loader2, ArrowUpDown, ChevronDown } from 'lucide-react';
 import { fetchEquipment, fetchCategories, searchEquipment, fetchEquipmentByCategory } from '../services/equipmentService';
 import { EquipmentWithCategory, Category } from '../types/equipment';
 import { getPlaceholderImage } from '../utils/imageHelper';
+import Modal from '../components/ui/Modal';
 
 const Equipment: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -189,134 +189,95 @@ const Equipment: React.FC = () => {
 
     const EquipmentDetailModal: React.FC<{ equipment: EquipmentWithCategory; onClose: () => void }> = ({ equipment, onClose }) => {
         return (
-            <div 
-                style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100vw',
-                    height: '100vh',
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1000,
-                    padding: '20px',
-                    boxSizing: 'border-box'
-                }}
-                onClick={onClose}
+            <Modal
+                isOpen={true}
+                onClose={onClose}
+                size="medium"
+                title={equipment.name}
+                showCloseButton={true}
+                closeOnOutsideClick={true}
             >
-                <div 
-                    style={{
-                        backgroundColor: 'var(--color-surface)',
-                        borderRadius: '12px',
-                        maxWidth: '600px',
-                        width: '100%',
-                        maxHeight: '80vh',
-                        overflow: 'auto',
-                        position: 'relative',
-                        border: '1px solid var(--color-border)'
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <button
-                        onClick={onClose}
-                        style={{
-                            position: 'absolute',
-                            top: '16px',
-                            right: '16px',
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--color-text)',
-                            cursor: 'pointer',
-                            zIndex: 10,
-                            padding: '8px'
-                        }}
-                    >
-                        <X size={24} />
-                    </button>
+                <div style={{ height: '300px', backgroundColor: '#000', overflow: 'hidden', borderRadius: '8px', marginBottom: 'var(--spacing-6)' }}>
+                    <img 
+                        src={equipment.image_url || getPlaceholderImage(equipment.categories?.name || 'Equipment')} 
+                        alt={equipment.name} 
+                        style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            objectFit: 'cover' 
+                        }} 
+                    />
+                </div>
+                
+                <div style={{ padding: 'var(--spacing-6)' }}>
+                    <span style={{ fontSize: '0.875rem', color: 'var(--color-primary)', fontWeight: 700, textTransform: 'uppercase' }}>
+                        {equipment.categories?.name || 'Uncategorized'}
+                    </span>
+                    <h2 style={{ margin: '8px 0 var(--spacing-4)', fontSize: '1.75rem', color: 'var(--color-text)' }}>
+                        {equipment.name}
+                    </h2>
                     
-                    <div style={{ height: '300px', backgroundColor: '#000', overflow: 'hidden' }}>
-                        <img 
-                            src={equipment.image_url || getPlaceholderImage(equipment.categories?.name || 'Equipment')} 
-                            alt={equipment.name} 
-                            style={{ 
-                                width: '100%', 
-                                height: '100%', 
-                                objectFit: 'cover' 
-                            }} 
-                        />
-                    </div>
-                    
-                    <div style={{ padding: 'var(--spacing-6)' }}>
-                        <span style={{ fontSize: '0.875rem', color: 'var(--color-primary)', fontWeight: 700, textTransform: 'uppercase' }}>
-                            {equipment.categories?.name || 'Uncategorized'}
-                        </span>
-                        <h2 style={{ margin: '8px 0 var(--spacing-4)', fontSize: '1.75rem', color: 'var(--color-text)' }}>
-                            {equipment.name}
-                        </h2>
-                        
-                        {equipment.description && (
-                            <div style={{ marginBottom: 'var(--spacing-6)' }}>
-                                <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
-                                    Description
-                                </h3>
-                                <p style={{ 
-                                    fontSize: '1rem', 
-                                    color: 'var(--color-text-muted)', 
-                                    lineHeight: '1.6',
-                                    whiteSpace: 'pre-wrap'
-                                }}>
-                                    {equipment.description}
-                                </p>
-                            </div>
-                        )}
-                        
-                        {equipment.specifications && Object.keys(equipment.specifications).length > 0 && (
-                            <div style={{ marginBottom: 'var(--spacing-6)' }}>
-                                <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
-                                    Specifications
-                                </h3>
-                                <div style={{ 
-                                    fontSize: '0.95rem', 
-                                    color: 'var(--color-text-muted)', 
-                                    lineHeight: '1.6',
-                                    backgroundColor: 'var(--color-surface)',
-                                    padding: 'var(--spacing-4)',
-                                    borderRadius: '6px',
-                                    border: '1px solid var(--color-border)'
-                                }}>
-                                    {Object.entries(equipment.specifications).map(([key, value]) => (
-                                        <div key={key} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                                            <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{key}:</span>
-                                            <span style={{ color: 'var(--color-text-muted)' }}>{String(value)}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                        
-                        <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
-                            <button
-                                onClick={onClose}
-                                style={{
-                                    width: '100%',
-                                    padding: '14px 24px',
-                                    backgroundColor: 'var(--color-primary)',
-                                    border: 'none',
-                                    borderRadius: '6px',
-                                    color: '#000',
-                                    fontWeight: 600,
-                                    fontSize: '1rem',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Close
-                            </button>
+                    {equipment.description && (
+                        <div style={{ marginBottom: 'var(--spacing-6)' }}>
+                            <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
+                                Description
+                            </h3>
+                            <p style={{ 
+                                fontSize: '1rem', 
+                                color: 'var(--color-text-muted)', 
+                                lineHeight: '1.6',
+                                whiteSpace: 'pre-wrap'
+                            }}>
+                                {equipment.description}
+                            </p>
                         </div>
+                    )}
+                    
+                    {equipment.specifications && Object.keys(equipment.specifications).length > 0 && (
+                        <div style={{ marginBottom: 'var(--spacing-6)' }}>
+                            <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
+                                Specifications
+                            </h3>
+                            <div style={{ 
+                                fontSize: '0.95rem', 
+                                color: 'var(--color-text-muted)', 
+                                lineHeight: '1.6',
+                                backgroundColor: 'var(--color-surface)',
+                                padding: 'var(--spacing-4)',
+                                borderRadius: '6px',
+                                border: '1px solid var(--color-border)'
+                            }}>
+                                {Object.entries(equipment.specifications).map(([key, value]) => (
+                                    <div key={key} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{key}:</span>
+                                        <span style={{ color: 'var(--color-text-muted)' }}>{String(value)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
+                        <button
+                            onClick={onClose}
+                            style={{
+                                width: '100%',
+                                padding: '14px 24px',
+                                backgroundColor: 'var(--color-primary)',
+                                border: 'none',
+                                borderRadius: '6px',
+                                color: '#000',
+                                fontWeight: 600,
+                                fontSize: '1rem',
+                                cursor: 'pointer',
+                                transition: 'var(--transition-fast)'
+                            }}
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
-            </div>
+            </Modal>
         );
     };
 
@@ -604,12 +565,11 @@ const Equipment: React.FC = () => {
             `}</style>
             
             {/* Equipment Detail Modal */}
-            {isModalOpen && selectedEquipment && createPortal(
+            {isModalOpen && selectedEquipment && (
                 <EquipmentDetailModal 
                     equipment={selectedEquipment} 
                     onClose={closeModal} 
-                />,
-                document.body
+                />
             )}
         </div>
     );

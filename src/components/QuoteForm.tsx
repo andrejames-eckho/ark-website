@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
-import { createPortal } from 'react-dom';
-import { X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import EquipmentSelector from './EquipmentSelector';
+import Modal from './ui/Modal';
 
 interface QuoteFormProps {
     onClose: () => void;
@@ -207,356 +207,286 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
     // Success view
     if (submitStatus === 'success') {
-        return createPortal(
-            <div style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100vw',
-                height: '100vh',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 9999,
-                padding: '20px',
-                boxSizing: 'border-box'
-            }}>
-                <div style={{
-                    backgroundColor: 'var(--color-surface)',
-                    borderRadius: '12px',
-                    padding: 'var(--spacing-8)',
-                    maxWidth: '500px',
-                    width: '100%',
-                    textAlign: 'center',
-                    position: 'relative'
-                }}>
-                    <button
-                        onClick={onClose}
-                        style={{
-                            position: 'absolute',
-                            top: '20px',
-                            right: '20px',
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--color-text-muted)',
-                            cursor: 'pointer',
-                            padding: '8px'
-                        }}
-                    >
-                        <X size={24} />
-                    </button>
-
+        return (
+            <Modal
+                isOpen={true}
+                onClose={onClose}
+                size="small"
+                showCloseButton={true}
+                closeOnOutsideClick={true}
+            >
+                <div style={{ textAlign: 'center' }}>
                     <CheckCircle size={64} color="var(--color-primary)" style={{ margin: '0 auto var(--spacing-4)' }} />
                     <h2 style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>Thank You!</h2>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem' }}>
                         Our team will contact you shortly with a custom quote for your event.
                     </p>
                 </div>
-            </div>,
-            document.body
+            </Modal>
         );
     }
 
     // Form view
-    return createPortal(
-        <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '20px',
-            boxSizing: 'border-box'
-        }}>
-            <div style={{
-                backgroundColor: 'var(--color-surface)',
-                borderRadius: '12px',
-                padding: 'var(--spacing-6)',
-                maxWidth: '600px',
-                width: '100%',
-                maxHeight: '90vh',
-                overflowY: 'auto',
-                position: 'relative'
-            }}>
-                <button
-                    onClick={onClose}
-                    style={{
-                        position: 'absolute',
-                        top: '20px',
-                        right: '20px',
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--color-text-muted)',
-                        cursor: 'pointer',
-                        padding: '8px',
-                        zIndex: 1
-                    }}
-                >
-                    <X size={24} />
-                </button>
+    return (
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            size="medium"
+            title="Get a Quote"
+            showCloseButton={true}
+            closeOnOutsideClick={true}
+        >
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>
+                Fill out the form below and we'll get back to you with a custom quote.
+            </p>
 
-                <h2 style={{ fontSize: '2rem', marginBottom: 'var(--spacing-1)' }}>
-                    Get a <span style={{ color: 'var(--color-primary)' }}>Quote</span>
-                </h2>
-                <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>
-                    Fill out the form below and we'll get back to you with a custom quote.
-                </p>
+            {submitStatus === 'error' && (
+                <div style={{
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: '8px',
+                    padding: 'var(--spacing-3)',
+                    marginBottom: 'var(--spacing-4)',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 'var(--spacing-2)'
+                }}>
+                    <AlertCircle size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <p style={{ color: '#ef4444', margin: 0, fontSize: '0.9rem' }}>{errorMessage}</p>
+                </div>
+            )}
 
-                {submitStatus === 'error' && (
-                    <div style={{
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.3)',
-                        borderRadius: '8px',
-                        padding: 'var(--spacing-3)',
-                        marginBottom: 'var(--spacing-4)',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: 'var(--spacing-2)'
-                    }}>
-                        <AlertCircle size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '2px' }} />
-                        <p style={{ color: '#ef4444', margin: 0, fontSize: '0.9rem' }}>{errorMessage}</p>
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-                    {/* Client Name */}
-                    <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Full Name *
-                        </label>
-                        <input
-                            type="text"
-                            name="client_name"
-                            value={formData.client_name}
-                            onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.client_name ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem'
-                            }}
-                            placeholder="Juan Dela Cruz"
-                        />
-                        {errors.client_name && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.client_name}</p>
-                        )}
-                    </div>
-
-                    {/* Email */}
-                    <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Email Address *
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.email ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem'
-                            }}
-                            placeholder="juan@example.com"
-                        />
-                        {errors.email && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.email}</p>
-                        )}
-                    </div>
-
-                    {/* Phone */}
-                    <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Phone Number *
-                        </label>
-                        <input
-                            type="tel"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.phone ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem'
-                            }}
-                            placeholder="+63 (917) 123 4567 or 0917 123 4567"
-                        />
-                        {errors.phone && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.phone}</p>
-                        )}
-                    </div>
-
-                    {/* Event Date */}
-                    <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Event Date *
-                        </label>
-                        <input
-                            type="date"
-                            name="event_date"
-                            value={formData.event_date}
-                            onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.event_date ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem'
-                            }}
-                        />
-                        {errors.event_date && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.event_date}</p>
-                        )}
-                    </div>
-
-                    {/* Event Duration */}
-                    <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Event Duration *
-                        </label>
-                        <select
-                            name="event_duration"
-                            value={formData.event_duration}
-                            onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.event_duration ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem'
-                            }}
-                        >
-                            <option value="">Select duration</option>
-                            <option value="Half day (4 hours)">Half day (4 hours)</option>
-                            <option value="Full day (8 hours)">Full day (8 hours)</option>
-                            <option value="2 days">2 days</option>
-                            <option value="3 days">3 days</option>
-                            <option value="1 week">1 week</option>
-                            <option value="Custom (please specify in details)">Custom (please specify in details)</option>
-                        </select>
-                        {errors.event_duration && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.event_duration}</p>
-                        )}
-                    </div>
-
-                    {/* Venue Name */}
-                    <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Venue Name *
-                        </label>
-                        <input
-                            type="text"
-                            name="venue_name"
-                            value={formData.venue_name}
-                            onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.venue_name ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem'
-                            }}
-                            placeholder="Convention Center"
-                        />
-                        {errors.venue_name && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.venue_name}</p>
-                        )}
-                    </div>
-
-                    {/* Gear List */}
-                    <div style={{ marginBottom: 'var(--spacing-6)' }}>
-                        <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Select Equipment Needed *
-                        </label>
-                        <EquipmentSelector
-                            selectedEquipment={formData.gear_list}
-                            onEquipmentChange={handleEquipmentChange}
-                            onError={(error) => setErrorMessage(error)}
-                        />
-                        {errors.gear_list && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '8px' }}>{errors.gear_list}</p>
-                        )}
-                    </div>
-
-                    {/* Event Details */}
-                    <div style={{ marginBottom: 'var(--spacing-6)' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Event Details (Optional)
-                        </label>
-                        <textarea
-                            name="event_details"
-                            value={formData.event_details}
-                            onChange={handleInputChange}
-                            rows={4}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                backgroundColor: 'var(--color-bg)',
-                                border: `1px solid ${errors.event_details ? '#ef4444' : 'var(--color-border)'}`,
-                                borderRadius: '6px',
-                                color: 'var(--color-text)',
-                                fontSize: '1rem',
-                                resize: 'vertical',
-                                minHeight: '100px'
-                            }}
-                            placeholder="Please describe your event in detail (e.g., type of event, expected number of attendees, specific requirements, setup preferences, etc.)"
-                        />
-                        {errors.event_details && (
-                            <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.event_details}</p>
-                        )}
-                    </div>
-
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
+            <form onSubmit={handleSubmit}>
+                {/* Client Name */}
+                <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Full Name *
+                    </label>
+                    <input
+                        type="text"
+                        name="client_name"
+                        value={formData.client_name}
+                        onChange={handleInputChange}
                         style={{
                             width: '100%',
-                            padding: '16px',
-                            backgroundColor: isSubmitting ? 'var(--color-border)' : 'var(--color-primary)',
-                            color: '#000',
-                            border: 'none',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.client_name ? '#ef4444' : 'var(--color-border)'}`,
                             borderRadius: '6px',
-                            fontSize: '1rem',
-                            fontWeight: 700,
-                            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                            transition: 'all 0.2s ease',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px'
+                            color: 'var(--color-text)',
+                            fontSize: '1rem'
+                        }}
+                        placeholder="Juan Dela Cruz"
+                    />
+                    {errors.client_name && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.client_name}</p>
+                    )}
+                </div>
+
+                {/* Email */}
+                <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Email Address *
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.email ? '#ef4444' : 'var(--color-border)'}`,
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            fontSize: '1rem'
+                        }}
+                        placeholder="juan@example.com"
+                    />
+                    {errors.email && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.email}</p>
+                    )}
+                </div>
+
+                {/* Phone */}
+                <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Phone Number *
+                    </label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.phone ? '#ef4444' : 'var(--color-border)'}`,
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            fontSize: '1rem'
+                        }}
+                        placeholder="+63 (917) 123 4567 or 0917 123 4567"
+                    />
+                    {errors.phone && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.phone}</p>
+                    )}
+                </div>
+
+                {/* Event Date */}
+                <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Event Date *
+                    </label>
+                    <input
+                        type="date"
+                        name="event_date"
+                        value={formData.event_date}
+                        onChange={handleInputChange}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.event_date ? '#ef4444' : 'var(--color-border)'}`,
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            fontSize: '1rem'
+                        }}
+                    />
+                    {errors.event_date && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.event_date}</p>
+                    )}
+                </div>
+
+                {/* Event Duration */}
+                <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Event Duration *
+                    </label>
+                    <select
+                        name="event_duration"
+                        value={formData.event_duration}
+                        onChange={handleInputChange}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.event_duration ? '#ef4444' : 'var(--color-border)'}`,
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            fontSize: '1rem'
                         }}
                     >
-                        {isSubmitting && <Loader2 size={20} className="animate-spin" />}
-                        {isSubmitting ? 'SENDING...' : 'SUBMIT QUOTE REQUEST'}
-                    </button>
-                </form>
-            </div>
-        </div>,
-        document.body
+                        <option value="">Select duration</option>
+                        <option value="Half day (4 hours)">Half day (4 hours)</option>
+                        <option value="Full day (8 hours)">Full day (8 hours)</option>
+                        <option value="2 days">2 days</option>
+                        <option value="3 days">3 days</option>
+                        <option value="1 week">1 week</option>
+                        <option value="Custom (please specify in details)">Custom (please specify in details)</option>
+                    </select>
+                    {errors.event_duration && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.event_duration}</p>
+                    )}
+                </div>
+
+                {/* Venue Name */}
+                <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Venue Name *
+                    </label>
+                    <input
+                        type="text"
+                        name="venue_name"
+                        value={formData.venue_name}
+                        onChange={handleInputChange}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.venue_name ? '#ef4444' : 'var(--color-border)'}`,
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            fontSize: '1rem'
+                        }}
+                        placeholder="Convention Center"
+                    />
+                    {errors.venue_name && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.venue_name}</p>
+                    )}
+                </div>
+
+                {/* Gear List */}
+                <div style={{ marginBottom: 'var(--spacing-6)' }}>
+                    <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Select Equipment Needed *
+                    </label>
+                    <EquipmentSelector
+                        selectedEquipment={formData.gear_list}
+                        onEquipmentChange={handleEquipmentChange}
+                        onError={(error) => setErrorMessage(error)}
+                    />
+                    {errors.gear_list && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '8px' }}>{errors.gear_list}</p>
+                    )}
+                </div>
+
+                {/* Event Details */}
+                <div style={{ marginBottom: 'var(--spacing-6)' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>
+                        Event Details (Optional)
+                    </label>
+                    <textarea
+                        name="event_details"
+                        value={formData.event_details}
+                        onChange={handleInputChange}
+                        rows={4}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            backgroundColor: 'var(--color-bg)',
+                            border: `1px solid ${errors.event_details ? '#ef4444' : 'var(--color-border)'}`,
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            fontSize: '1rem',
+                            resize: 'vertical',
+                            minHeight: '100px'
+                        }}
+                        placeholder="Please describe your event in detail (e.g., type of event, expected number of attendees, specific requirements, setup preferences, etc.)"
+                    />
+                    {errors.event_details && (
+                        <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '4px' }}>{errors.event_details}</p>
+                    )}
+                </div>
+
+                {/* Submit Button */}
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    style={{
+                        width: '100%',
+                        padding: '16px',
+                        backgroundColor: isSubmitting ? 'var(--color-border)' : 'var(--color-primary)',
+                        color: '#000',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '1rem',
+                        fontWeight: 700,
+                        cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                    }}
+                >
+                    {isSubmitting && <Loader2 size={20} className="animate-spin" />}
+                    {isSubmitting ? 'SENDING...' : 'SUBMIT QUOTE REQUEST'}
+                </button>
+            </form>
+        </Modal>
     );
 };
 
