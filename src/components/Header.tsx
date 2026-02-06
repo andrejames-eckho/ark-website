@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
                     <img 
-                        src="/logo.png" 
+                        src="/logo.svg" 
                         alt="ARK PRO Audio and Lights" 
                         style={{ height: '40px', width: 'auto' }}
                     />
