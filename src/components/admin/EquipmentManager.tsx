@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { EquipmentWithCategory, Category } from '../../types/equipment';
 import { fetchAllEquipment, fetchCategories, deleteEquipment } from '../../services/equipmentService';
-import { Search, Plus, Edit, Trash2, Loader2, Filter } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Loader2, Filter, Eye } from 'lucide-react';
 import EquipmentForm from './EquipmentForm';
+import Modal from '../ui/Modal';
+import { getPlaceholderImage } from '../../utils/imageHelper';
 
 const EquipmentManager: React.FC = () => {
   const [equipment, setEquipment] = useState<EquipmentWithCategory[]>([]);
@@ -14,6 +16,7 @@ const EquipmentManager: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingEquipment, setEditingEquipment] = useState<EquipmentWithCategory | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [viewingEquipment, setViewingEquipment] = useState<EquipmentWithCategory | null>(null);
 
   useEffect(() => {
     loadData();
@@ -66,6 +69,10 @@ const EquipmentManager: React.FC = () => {
   const handleEditEquipment = (item: EquipmentWithCategory) => {
     setEditingEquipment(item);
     setShowForm(true);
+  };
+
+  const handleViewEquipment = (item: EquipmentWithCategory) => {
+    setViewingEquipment(item);
   };
 
   const handleDeleteEquipment = async (id: number) => {
@@ -148,7 +155,16 @@ const EquipmentManager: React.FC = () => {
             borderRadius: '8px',
             fontSize: '1rem',
             fontWeight: 600,
-            cursor: 'pointer'
+            cursor: 'pointer',
+            transition: 'var(--transition-fast)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
           }}
         >
           <Plus size={20} />
@@ -311,7 +327,14 @@ const EquipmentManager: React.FC = () => {
                     key={item.id}
                     style={{
                       borderBottom: '1px solid var(--color-border)',
-                      transition: 'var(--transition-fast)'
+                      transition: 'var(--transition-fast)',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'var(--color-bg)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
                     }}
                   >
                     <td style={{ padding: '16px' }}>
@@ -396,6 +419,34 @@ const EquipmentManager: React.FC = () => {
                         justifyContent: 'center'
                       }}>
                         <button
+                          onClick={() => handleViewEquipment(item)}
+                          style={{
+                            padding: '8px',
+                            backgroundColor: 'transparent',
+                            border: '1px solid var(--color-border)',
+                            borderRadius: '6px',
+                            color: 'var(--color-text)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'var(--transition-fast)'
+                          }}
+                          title="View"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                            e.currentTarget.style.color = '#000';
+                            e.currentTarget.style.borderColor = 'var(--color-primary)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = 'var(--color-text)';
+                            e.currentTarget.style.borderColor = 'var(--color-border)';
+                          }}
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
                           onClick={() => handleEditEquipment(item)}
                           style={{
                             padding: '8px',
@@ -406,9 +457,20 @@ const EquipmentManager: React.FC = () => {
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            transition: 'var(--transition-fast)'
                           }}
                           title="Edit"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                            e.currentTarget.style.color = '#000';
+                            e.currentTarget.style.borderColor = 'var(--color-primary)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = 'var(--color-text)';
+                            e.currentTarget.style.borderColor = 'var(--color-border)';
+                          }}
                         >
                           <Edit size={16} />
                         </button>
@@ -423,9 +485,20 @@ const EquipmentManager: React.FC = () => {
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            transition: 'var(--transition-fast)'
                           }}
                           title="Delete"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#ef4444';
+                            e.currentTarget.style.color = '#fff';
+                            e.currentTarget.style.borderColor = '#ef4444';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = '#ef4444';
+                            e.currentTarget.style.borderColor = 'var(--color-border)';
+                          }}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -453,43 +526,27 @@ const EquipmentManager: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            width: '90%',
-            maxWidth: '400px',
-            backgroundColor: 'var(--color-surface)',
-            borderRadius: '12px',
-            padding: 'var(--spacing-6)',
-            border: '1px solid var(--color-border)'
-          }}>
-            <h3 style={{
-              margin: '0 0 var(--spacing-4) 0',
-              color: 'var(--color-text)',
-              fontSize: '1.3rem'
-            }}>
-              Confirm Delete
-            </h3>
+        <Modal
+          isOpen={true}
+          onClose={() => setDeleteConfirm(null)}
+          size="small"
+          title="Confirm Delete"
+          showCloseButton={true}
+          closeOnOutsideClick={true}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <Trash2 size={48} color="#ef4444" style={{ marginBottom: 'var(--spacing-4)' }} />
             <p style={{
               margin: '0 0 var(--spacing-6) 0',
-              color: 'var(--color-text-muted)'
+              color: 'var(--color-text-muted)',
+              fontSize: '1rem'
             }}>
               Are you sure you want to delete this equipment? This action cannot be undone.
             </p>
             <div style={{
               display: 'flex',
               gap: 'var(--spacing-2)',
-              justifyContent: 'flex-end'
+              justifyContent: 'center'
             }}>
               <button
                 onClick={() => setDeleteConfirm(null)}
@@ -501,7 +558,8 @@ const EquipmentManager: React.FC = () => {
                   borderRadius: '8px',
                   fontSize: '1rem',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'var(--transition-fast)'
                 }}
               >
                 Cancel
@@ -516,14 +574,160 @@ const EquipmentManager: React.FC = () => {
                   borderRadius: '8px',
                   fontSize: '1rem',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'var(--transition-fast)'
                 }}
               >
                 Delete
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
+      )}
+
+      {/* Equipment Detail Modal */}
+      {viewingEquipment && (
+        <Modal
+          isOpen={true}
+          onClose={() => setViewingEquipment(null)}
+          size="large"
+          title={viewingEquipment.name}
+          showCloseButton={true}
+          closeOnOutsideClick={true}
+        >
+          <div style={{ height: '300px', backgroundColor: '#000', overflow: 'hidden', borderRadius: '8px', marginBottom: 'var(--spacing-6)' }}>
+            <img 
+              src={viewingEquipment.image_url || getPlaceholderImage(viewingEquipment.categories?.name || 'Equipment')} 
+              alt={viewingEquipment.name} 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                objectFit: 'cover' 
+              }} 
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
+            <span style={{ fontSize: '0.875rem', color: 'var(--color-primary)', fontWeight: 700, textTransform: 'uppercase' }}>
+              {viewingEquipment.categories?.name || 'Uncategorized'}
+            </span>
+            <span style={{
+              padding: '4px 8px',
+              backgroundColor: getStatusColor(viewingEquipment.status) + '20',
+              color: getStatusColor(viewingEquipment.status),
+              borderRadius: '4px',
+              fontSize: '0.8rem',
+              fontWeight: 600
+            }}>
+              {viewingEquipment.status}
+            </span>
+          </div>
+          
+          {viewingEquipment.description && (
+            <div style={{ marginBottom: 'var(--spacing-6)' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
+                Description
+              </h3>
+              <p style={{ 
+                fontSize: '1rem', 
+                color: 'var(--color-text-muted)', 
+                lineHeight: '1.6',
+                whiteSpace: 'pre-wrap'
+              }}>
+                {viewingEquipment.description}
+              </p>
+            </div>
+          )}
+          
+          {viewingEquipment.specifications && Object.keys(viewingEquipment.specifications).length > 0 && (
+            <div style={{ marginBottom: 'var(--spacing-6)' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: 'var(--spacing-3)', color: 'var(--color-text)' }}>
+                Specifications
+              </h3>
+              <div style={{ 
+                fontSize: '0.95rem', 
+                color: 'var(--color-text-muted)', 
+                lineHeight: '1.6',
+                backgroundColor: 'var(--color-surface)',
+                padding: 'var(--spacing-4)',
+                borderRadius: '6px',
+                border: '1px solid var(--color-border)'
+              }}>
+                {Object.entries(viewingEquipment.specifications).map(([key, value]) => (
+                  <div key={key} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{key}:</span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{String(value)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div style={{ display: 'flex', gap: 'var(--spacing-3)', justifyContent: 'flex-end' }}>
+            <button
+              onClick={() => {
+                setViewingEquipment(null);
+                handleEditEquipment(viewingEquipment);
+              }}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: 'transparent',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '6px',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'var(--transition-fast)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <Edit size={16} />
+              Edit
+            </button>
+            <button
+              onClick={() => {
+                setDeleteConfirm(viewingEquipment.id);
+                setViewingEquipment(null);
+              }}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#ef4444',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'var(--transition-fast)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <Trash2 size={16} />
+              Delete
+            </button>
+            <button
+              onClick={() => setViewingEquipment(null)}
+              style={{
+                padding: '14px 24px',
+                backgroundColor: 'var(--color-primary)',
+                border: 'none',
+                borderRadius: '6px',
+                color: '#000',
+                fontWeight: 600,
+                fontSize: '1rem',
+                cursor: 'pointer',
+                transition: 'var(--transition-fast)'
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
       )}
     </div>
   );

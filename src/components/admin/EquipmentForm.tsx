@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Equipment, Category } from '../../types/equipment';
 import { fetchCategories, addEquipment, updateEquipment, uploadEquipmentImage } from '../../services/equipmentService';
-import { X, Upload, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, Image as ImageIcon, Loader2, X } from 'lucide-react';
+import Modal from '../ui/Modal';
 
 interface EquipmentFormProps {
   equipment?: Equipment;
@@ -143,406 +144,364 @@ const EquipmentForm: React.FC<EquipmentFormProps> = ({ equipment, onSave, onCanc
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        width: '90%',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        backgroundColor: 'var(--color-surface)',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        {/* Header */}
-        <div style={{
-          padding: 'var(--spacing-4)',
-          borderBottom: '1px solid var(--color-border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <h2 style={{
-            margin: 0,
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            color: 'var(--color-text)'
+    <Modal
+      isOpen={true}
+      onClose={onCancel}
+      size="medium"
+      title={isEditing ? 'Edit Equipment' : 'Add New Equipment'}
+      showCloseButton={true}
+      closeOnOutsideClick={true}
+    >
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+        {/* Name */}
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: 'var(--color-text)',
+            marginBottom: '8px'
           }}>
-            {isEditing ? 'Edit Equipment' : 'Add New Equipment'}
-          </h2>
-          <button
-            onClick={onCancel}
+            Name *
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
             style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--color-text-muted)',
-              cursor: 'pointer',
-              padding: '8px'
+              width: '100%',
+              padding: '12px 16px',
+              backgroundColor: 'var(--color-bg)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              color: 'var(--color-text)',
+              fontSize: '1rem',
+              outline: 'none',
+              transition: 'var(--transition-fast)'
+            }}
+            placeholder="Equipment name"
+          />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: 'var(--color-text)',
+            marginBottom: '8px'
+          }}>
+            Category *
+          </label>
+          <select
+            name="category_id"
+            value={formData.category_id}
+            onChange={handleInputChange}
+            required
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              backgroundColor: 'var(--color-bg)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              color: 'var(--color-text)',
+              fontSize: '1rem',
+              outline: 'none',
+              transition: 'var(--transition-fast)'
             }}
           >
-            <X size={24} />
-          </button>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Form */}
-        <div style={{
-          padding: 'var(--spacing-4)',
-          overflowY: 'auto',
-          flex: 1
-        }}>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-            {/* Name */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'var(--color-text)',
-                marginBottom: '8px'
-              }}>
-                Name *
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--color-bg)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  color: 'var(--color-text)',
-                  fontSize: '1rem',
-                  outline: 'none'
-                }}
-                placeholder="Equipment name"
-              />
-            </div>
+        {/* Description */}
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: 'var(--color-text)',
+            marginBottom: '8px'
+          }}>
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            rows={3}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              backgroundColor: 'var(--color-bg)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              color: 'var(--color-text)',
+              fontSize: '1rem',
+              outline: 'none',
+              resize: 'vertical',
+              transition: 'var(--transition-fast)'
+            }}
+            placeholder="Equipment description"
+          />
+        </div>
 
-            {/* Category */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'var(--color-text)',
-                marginBottom: '8px'
-              }}>
-                Category *
-              </label>
-              <select
-                name="category_id"
-                value={formData.category_id}
-                onChange={handleInputChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--color-bg)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  color: 'var(--color-text)',
-                  fontSize: '1rem',
-                  outline: 'none'
-                }}
-              >
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* Status */}
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: 'var(--color-text)',
+            marginBottom: '8px'
+          }}>
+            Status
+          </label>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleInputChange}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              backgroundColor: 'var(--color-bg)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              color: 'var(--color-text)',
+              fontSize: '1rem',
+              outline: 'none',
+              transition: 'var(--transition-fast)'
+            }}
+          >
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+        </div>
 
-            {/* Description */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'var(--color-text)',
-                marginBottom: '8px'
-              }}>
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows={3}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--color-bg)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  color: 'var(--color-text)',
-                  fontSize: '1rem',
-                  outline: 'none',
-                  resize: 'vertical'
-                }}
-                placeholder="Equipment description"
-              />
-            </div>
-
-            {/* Status */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'var(--color-text)',
-                marginBottom: '8px'
-              }}>
-                Status
-              </label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--color-bg)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  color: 'var(--color-text)',
-                  fontSize: '1rem',
-                  outline: 'none'
-                }}
-              >
-                <option value="available">Available</option>
-                <option value="unavailable">Unavailable</option>
-                <option value="maintenance">Maintenance</option>
-              </select>
-            </div>
-
-            {/* Image Upload */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'var(--color-text)',
-                marginBottom: '8px'
-              }}>
-                Image
-              </label>
-              <div style={{
-                border: '2px dashed var(--color-border)',
-                borderRadius: '8px',
-                padding: 'var(--spacing-4)',
-                textAlign: 'center',
-                cursor: 'pointer',
-                transition: 'var(--transition-fast)'
-              }}>
-                {imagePreview ? (
-                  <div>
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      style={{
-                        width: '100%',
-                        maxHeight: '200px',
-                        objectFit: 'cover',
-                        borderRadius: '4px',
-                        marginBottom: 'var(--spacing-2)'
-                      }}
-                    />
-                    <label style={{
-                      display: 'inline-block',
-                      padding: '8px 16px',
-                      backgroundColor: 'var(--color-primary)',
-                      color: '#000',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontWeight: 600
-                    }}>
-                      Change Image
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        style={{ display: 'none' }}
-                      />
-                    </label>
-                  </div>
-                ) : (
-                  <label style={{ cursor: 'pointer' }}>
-                    <ImageIcon size={48} color="var(--color-text-muted)" style={{ marginBottom: '8px' }} />
-                    <div style={{ color: 'var(--color-text-muted)', marginBottom: '8px' }}>
-                      Click to upload image or drag and drop
-                    </div>
-                    <Upload size={20} color="var(--color-text-muted)" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
-                )}
-              </div>
-            </div>
-
-            {/* Specifications */}
-            <div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '8px'
-              }}>
-                <label style={{
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  color: 'var(--color-text)'
-                }}>
-                  Specifications
-                </label>
-                <button
-                  type="button"
-                  onClick={addSpecificationField}
+        {/* Image Upload */}
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: 'var(--color-text)',
+            marginBottom: '8px'
+          }}>
+            Image
+          </label>
+          <div style={{
+            border: '2px dashed var(--color-border)',
+            borderRadius: '8px',
+            padding: 'var(--spacing-4)',
+            textAlign: 'center',
+            cursor: 'pointer',
+            transition: 'var(--transition-fast)'
+          }}>
+            {imagePreview ? (
+              <div>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
                   style={{
-                    padding: '4px 12px',
-                    backgroundColor: 'var(--color-primary)',
-                    color: '#000',
-                    border: 'none',
+                    width: '100%',
+                    maxHeight: '200px',
+                    objectFit: 'cover',
                     borderRadius: '4px',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: 'pointer'
+                    marginBottom: 'var(--spacing-2)'
                   }}
-                >
-                  Add Spec
-                </button>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {Object.entries(formData.specifications).map(([key, value]) => (
-                  <div key={key} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <input
-                      type="text"
-                      value={key}
-                      readOnly
-                      style={{
-                        flex: 1,
-                        padding: '8px 12px',
-                        backgroundColor: 'var(--color-bg)',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: '4px',
-                        color: 'var(--color-text)',
-                        fontSize: '0.9rem'
-                      }}
-                    />
-                    <input
-                      type="text"
-                      value={value}
-                      onChange={(e) => handleSpecificationChange(key, e.target.value)}
-                      style={{
-                        flex: 2,
-                        padding: '8px 12px',
-                        backgroundColor: 'var(--color-bg)',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: '4px',
-                        color: 'var(--color-text)',
-                        fontSize: '0.9rem'
-                      }}
-                      placeholder="Value"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeSpecificationField(key)}
-                      style={{
-                        padding: '8px',
-                        backgroundColor: 'transparent',
-                        border: '1px solid var(--color-border)',
-                        borderRadius: '4px',
-                        color: 'var(--color-text-muted)',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {error && (
-              <div style={{
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '8px',
-                padding: '12px'
-              }}>
-                <p style={{ color: '#ef4444', margin: 0, fontSize: '0.9rem' }}>
-                  {error}
-                </p>
-              </div>
-            )}
-
-            {/* Actions */}
-            <div style={{
-              display: 'flex',
-              gap: 'var(--spacing-2)',
-              justifyContent: 'flex-end',
-              paddingTop: 'var(--spacing-2)'
-            }}>
-              <button
-                type="button"
-                onClick={onCancel}
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: 'transparent',
-                  color: 'var(--color-text)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  padding: '12px 24px',
+                />
+                <label style={{
+                  display: 'inline-block',
+                  padding: '8px 16px',
                   backgroundColor: 'var(--color-primary)',
                   color: '#000',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
                   fontWeight: 600,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                {loading && <Loader2 size={18} className="animate-spin" />}
-                {loading ? 'Saving...' : (isEditing ? 'Update' : 'Add')} Equipment
-              </button>
-            </div>
-          </form>
+                  transition: 'var(--transition-fast)'
+                }}>
+                  Change Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
+            ) : (
+              <label style={{ cursor: 'pointer' }}>
+                <ImageIcon size={48} color="var(--color-text-muted)" style={{ marginBottom: '8px' }} />
+                <div style={{ color: 'var(--color-text-muted)', marginBottom: '8px' }}>
+                  Click to upload image or drag and drop
+                </div>
+                <Upload size={20} color="var(--color-text-muted)" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+
+        {/* Specifications */}
+        <div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '8px'
+          }}>
+            <label style={{
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              color: 'var(--color-text)'
+            }}>
+              Specifications
+            </label>
+            <button
+              type="button"
+              onClick={addSpecificationField}
+              style={{
+                padding: '4px 12px',
+                backgroundColor: 'var(--color-primary)',
+                color: '#000',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'var(--transition-fast)'
+              }}
+            >
+              Add Spec
+            </button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {Object.entries(formData.specifications).map(([key, value]) => (
+              <div key={key} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  value={key}
+                  readOnly
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    backgroundColor: 'var(--color-bg)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '4px',
+                    color: 'var(--color-text)',
+                    fontSize: '0.9rem'
+                  }}
+                />
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => handleSpecificationChange(key, e.target.value)}
+                  style={{
+                    flex: 2,
+                    padding: '8px 12px',
+                    backgroundColor: 'var(--color-bg)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '4px',
+                    color: 'var(--color-text)',
+                    fontSize: '0.9rem',
+                    transition: 'var(--transition-fast)'
+                  }}
+                  placeholder="Value"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSpecificationField(key)}
+                  style={{
+                    padding: '8px',
+                    backgroundColor: 'transparent',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '4px',
+                    color: 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                    transition: 'var(--transition-fast)'
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {error && (
+          <div style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '8px',
+            padding: '12px'
+          }}>
+            <p style={{ color: '#ef4444', margin: 0, fontSize: '0.9rem' }}>
+              {error}
+            </p>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div style={{
+          display: 'flex',
+          gap: 'var(--spacing-2)',
+          justifyContent: 'flex-end',
+          paddingTop: 'var(--spacing-2)'
+        }}>
+          <button
+            type="button"
+            onClick={onCancel}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: 'transparent',
+              color: 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'var(--transition-fast)'
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: loading ? 'var(--color-border)' : 'var(--color-primary)',
+              color: '#000',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'var(--transition-fast)'
+            }}
+          >
+            {loading && <Loader2 size={18} className="animate-spin" />}
+            {loading ? 'Saving...' : (isEditing ? 'Update' : 'Add')} Equipment
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 };
 
