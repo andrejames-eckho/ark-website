@@ -4,20 +4,47 @@ import { getEquipmentImageUrl } from '../utils/imageHelper';
 
 export const fetchEquipment = async (): Promise<EquipmentWithCategory[]> => {
   try {
-    const { data, error } = await supabase
+    console.log('Fetching equipment...');
+    
+    // Test basic connection first
+    console.log('Testing Supabase connection...');
+    const { data: testData, error: testError } = await supabase
+      .from('equipment')
+      .select('count')
+      .limit(1);
+    
+    console.log('Connection test result:', { testData, testError });
+    
+    if (testError) {
+      console.error('Supabase connection test failed:', testError);
+      return [];
+    }
+    
+    // Add timeout test
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000);
+    });
+    
+    const fetchPromise = supabase
       .from('equipment')
       .select(`
         *,
         categories(name, icon_name)
       `)
       .eq('status', 'available');
+    
+    const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
+    
+    console.log('Equipment fetch response:', { data, error });
 
     if (error) {
       console.error('Error fetching equipment:', error);
       return [];
     }
 
-    return data.map(item => ({
+    console.log('Equipment data fetched:', data?.length || 0, 'items');
+
+    return data.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -41,7 +68,7 @@ export const fetchAllEquipment = async (): Promise<EquipmentWithCategory[]> => {
       return [];
     }
 
-    return data.map(item => ({
+    return data.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -53,15 +80,35 @@ export const fetchAllEquipment = async (): Promise<EquipmentWithCategory[]> => {
 
 export const fetchCategories = async (): Promise<Category[]> => {
   try {
+    console.log('Fetching categories...');
+    
+    // Test basic connection first
+    console.log('Testing categories connection...');
+    const { data: testData, error: testError } = await supabase
+      .from('categories')
+      .select('count')
+      .limit(1);
+    
+    console.log('Categories connection test result:', { testData, testError });
+    
+    if (testError) {
+      console.error('Categories connection test failed:', testError);
+      return [];
+    }
+    
     const { data, error } = await supabase
       .from('categories')
       .select('*')
       .order('name');
 
+    console.log('Categories fetch response:', { data, error });
+
     if (error) {
       console.error('Error fetching categories:', error);
       return [];
     }
+
+    console.log('Categories data fetched:', data?.length || 0, 'items');
 
     return data || [];
   } catch (error) {
@@ -86,7 +133,7 @@ export const fetchEquipmentByCategory = async (categoryId: number): Promise<Equi
       return [];
     }
 
-    return data.map(item => ({
+    return data.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -128,7 +175,7 @@ export const searchEquipment = async (query: string): Promise<EquipmentWithCateg
     }
 
     // Client-side filtering for specifications
-    const specMatches = (allData || []).filter((item: any) => {
+    const specMatches = (allData || []).filter((item: EquipmentWithCategory) => {
       if (!item.specifications) return false;
 
       const queryWords = query.toLowerCase().split(' ').filter(word => word.length > 0);
@@ -159,7 +206,7 @@ export const searchEquipment = async (query: string): Promise<EquipmentWithCateg
       index === self.findIndex((t) => t.id === item.id)
     );
 
-    return uniqueResults.map((item: any) => ({
+    return uniqueResults.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -182,7 +229,7 @@ export const getEquipmentOptionsForQuote = async (): Promise<string[]> => {
       return [];
     }
 
-    return data.map(item => item.name);
+    return data.map((item: { name: string }) => item.name);
   } catch (error) {
     console.error('Unexpected error fetching equipment options:', error);
     return [];
@@ -241,7 +288,7 @@ export const getEquipmentByCategoryForQuote = async (categoryId: number): Promis
       return [];
     }
 
-    return data.map(item => ({
+    return data.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -297,7 +344,7 @@ export const searchEquipmentForQuote = async (query: string, categoryId?: number
     }
 
     // Client-side filtering for specifications
-    const specMatches = (allData || []).filter((item: any) => {
+    const specMatches = (allData || []).filter((item: EquipmentWithCategory) => {
       if (!item.specifications) return false;
 
       const queryWords = query.toLowerCase().split(' ').filter(word => word.length > 0);
@@ -328,7 +375,7 @@ export const searchEquipmentForQuote = async (query: string, categoryId?: number
       index === self.findIndex((t) => t.id === item.id)
     );
 
-    return uniqueResults.map((item: any) => ({
+    return uniqueResults.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));
@@ -355,7 +402,7 @@ export const getPopularEquipmentForQuote = async (limit: number = 10): Promise<E
       return [];
     }
 
-    return data.map(item => ({
+    return data.map((item: EquipmentWithCategory) => ({
       ...item,
       image_url: item.image_url ? getEquipmentImageUrl(item.image_url) : undefined
     }));

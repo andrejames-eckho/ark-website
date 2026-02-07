@@ -21,14 +21,21 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
     setError(null);
 
     try {
-      const { error } = await signIn(email, password);
+      const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number) => {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Login timeout after 20 seconds')), timeoutMs);
+        });
+        return (await Promise.race([promise, timeoutPromise])) as T;
+      };
+
+      const { error } = await withTimeout(signIn(email, password), 20000);
       if (error) {
         setError(error.message);
       } else {
         onSuccess?.();
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }

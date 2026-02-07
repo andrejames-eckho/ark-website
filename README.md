@@ -59,33 +59,42 @@ A modern web application for managing professional audio equipment inventory, bu
 
 ### Adding New Admins
 
-The ARK website uses Supabase Authentication with role-based access control. Admin status is determined by `user.user_metadata.role === 'admin'`.
+The ARK website uses a secure admin role system with database-level access control. Admin status is stored in a secure `admin_roles` table and enforced through Row Level Security policies.
 
-#### Method 1: Supabase Dashboard (Recommended)
+#### Method 1: Database SQL (Recommended)
 
 1. Go to your Supabase project dashboard
-2. Navigate to **Authentication** → **Users**
-3. Find the existing user or click **Add user** to create a new one
-4. Edit the user's `user_metadata` field to include:
-   ```json
-   {"role": "admin"}
+2. Navigate to **SQL Editor** → **New query**
+3. Run the following SQL to grant admin access:
+   ```sql
+   -- Grant admin role to a user (replace with actual user ID)
+   SELECT grant_admin_role(
+     'user-uuid-here', -- Target user's UUID
+     'admin-uuid-here'  -- Your admin user UUID (granting user)
+   );
    ```
-5. The user can now login with their email/password at `/admin`
+4. To find user UUIDs, you can query:
+   ```sql
+   SELECT id, email, created_at FROM auth.users ORDER BY created_at DESC;
+   ```
 
-#### Method 2: Direct Database Access
+#### Method 2: Direct Table Access
 
-Access Supabase SQL Editor and run:
+For existing admins, you can directly insert into the admin_roles table:
 ```sql
-UPDATE auth.users 
-SET raw_user_meta_data = jsonb_set(raw_user_meta_data, '{role}', '"admin"') 
-WHERE email = 'user@example.com';
+INSERT INTO admin_roles (user_id, created_by)
+VALUES ('user-uuid-here', 'admin-uuid-here');
 ```
+
+#### Method 3: Migration from Legacy System
+
+If you have existing admins with user_metadata.role = 'admin', the security migration will automatically move them to the new secure system.
 
 ### Admin Access
 
 - **Login URL**: `/admin`
 - **Dashboard URL**: `/backstage-access`
-- **Required**: Valid admin role in user metadata
+- **Required**: Valid admin role in secure admin_roles table
 
 ### Security Considerations
 
@@ -99,14 +108,19 @@ WHERE email = 'user@example.com';
 
 **Admin login not working:**
 1. Verify user exists in Supabase Authentication
-2. Check `user_metadata.role` equals `"admin"`
+2. Check user has entry in admin_roles table
 3. Ensure user has confirmed their email
 4. Check browser console for authentication errors
 
 **Access denied to admin dashboard:**
 1. Verify `isAdmin` state in AuthContext
-2. Check user metadata structure
+2. Check admin_roles table for user entry
 3. Ensure proper redirect from `/admin` to `/backstage-access`
+
+**Security Migration Issues:**
+1. Run the security migration SQL if upgrading from legacy system
+2. Verify existing admins were migrated to admin_roles table
+3. Check that old user_metadata admin references are removed
 
 ## Project Structure
 
@@ -142,10 +156,11 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Authentication Flow
 
 1. **User Registration**: Email/password signup via Supabase Auth
-2. **Role Assignment**: Admin role set in user metadata
+2. **Role Assignment**: Admin role assigned via secure admin_roles table
 3. **Login**: Standard Supabase authentication
-4. **Access Control**: Role-based routing and component protection
+4. **Access Control**: Database-level security with RLS policies
 5. **Session Management**: Persistent auth state via Supabase client
+6. **Security**: Admin status verified against secure database table
 
 ## Contributing
 

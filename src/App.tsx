@@ -22,7 +22,17 @@ import ContentUnavailable from './pages/ContentUnavailable';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, loading, adminLoading } = useAuth();
+  
+  if (loading) {
+    return null;
+  }
+  
+  // If user is loaded but admin status is still loading, render children.
+  // AdminLayout will show its own loading indicator.
+  if (adminLoading) {
+    return <>{children}</>;
+  }
   
   if (!user || !isAdmin) {
     return <Navigate to="/backstage-access/login" replace />;

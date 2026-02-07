@@ -8,16 +8,16 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, loading, adminLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Redirect if not admin
   React.useEffect(() => {
-    if (!user || !isAdmin) {
+    if (!loading && !adminLoading && (!user || !isAdmin)) {
       navigate('/backstage-access/login');
     }
-  }, [user, isAdmin, navigate]);
+  }, [user, isAdmin, loading, adminLoading, navigate]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -36,6 +36,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       icon: Package
     }
   ];
+
+  if (loading || adminLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: 'var(--color-bg)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: 'var(--color-text)'
+      }}>
+        <div>Loading admin panel...</div>
+      </div>
+    );
+  }
 
   if (!user || !isAdmin) {
     return null; // Will redirect
