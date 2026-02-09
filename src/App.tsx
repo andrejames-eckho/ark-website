@@ -22,23 +22,28 @@ import ContentUnavailable from './pages/ContentUnavailable';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAdmin, loading, adminLoading } = useAuth();
-  
-  if (loading) {
-    return null;
-  }
-  
-  // If user is loaded but admin status is still loading, render children.
-  // AdminLayout will show its own loading indicator.
-  if (adminLoading) {
+    const { user, isAdmin, loading } = useAuth();
+
+    if (loading) {
+        return (
+            <div style={{
+                minHeight: '100vh',
+                backgroundColor: 'var(--color-bg)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: 'var(--color-text)'
+            }}>
+                <div>Loading...</div>
+            </div>
+        );
+    }
+
+    if (!user || !isAdmin) {
+        return <Navigate to="/backstage-access/login" replace />;
+    }
+
     return <>{children}</>;
-  }
-  
-  if (!user || !isAdmin) {
-    return <Navigate to="/backstage-access/login" replace />;
-  }
-  
-  return <>{children}</>;
 };
 
 const App: React.FC = () => {
@@ -59,7 +64,7 @@ const App: React.FC = () => {
                         <Route path="/services/dry-hire" element={<DryHire onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
                         <Route path="/services/installation" element={<Installation onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
                         <Route path="/services/broadcast-led" element={<BroadcastLED onOpenQuoteForm={() => setShowQuoteForm(true)} />} />
-                        
+
                         {/* Admin Routes */}
                         <Route path="/backstage-access/login" element={<AdminLogin />} />
                         <Route path="/backstage-access" element={
@@ -70,12 +75,12 @@ const App: React.FC = () => {
                             <Route index element={<Dashboard />} />
                             <Route path="equipment" element={<EquipmentManagement />} />
                         </Route>
-                        
+
                         {/* Catch-all route for unassigned paths */}
                         <Route path="*" element={<ContentUnavailable />} />
                     </Routes>
                 </Layout>
-                
+
                 {/* Quote Form Modal - rendered at App level for full-screen overlay */}
                 {showQuoteForm && createPortal(
                     <QuoteForm onClose={() => setShowQuoteForm(false)} />,
