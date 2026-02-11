@@ -202,8 +202,8 @@ export const searchEquipment = async (query: string): Promise<EquipmentWithCateg
     // Combine results and remove duplicates
     const dbMatches = data || [];
     const combinedResults = [...dbMatches, ...specMatches];
-    const uniqueResults = combinedResults.filter((item, index, self) => 
-      index === self.findIndex((t) => t.id === item.id)
+    const uniqueResults = combinedResults.filter((item: EquipmentWithCategory, index, self) => 
+      index === self.findIndex((t: EquipmentWithCategory) => t.id === item.id)
     );
 
     return uniqueResults.map((item: EquipmentWithCategory) => ({
@@ -250,7 +250,7 @@ export const getEquipmentCategoriesForQuote = async (): Promise<Category[]> => {
 
     // Get equipment count for each category
     const categoriesWithCount = await Promise.all(
-      (data || []).map(async (category) => {
+      (data || []).map(async (category: Category) => {
         const { count } = await supabase
           .from('equipment')
           .select('*', { count: 'exact', head: true })
@@ -371,8 +371,8 @@ export const searchEquipmentForQuote = async (query: string, categoryId?: number
     // Combine results and remove duplicates
     const dbMatches = data || [];
     const combinedResults = [...dbMatches, ...specMatches];
-    const uniqueResults = combinedResults.filter((item, index, self) => 
-      index === self.findIndex((t) => t.id === item.id)
+    const uniqueResults = combinedResults.filter((item: EquipmentWithCategory, index, self) => 
+      index === self.findIndex((t: EquipmentWithCategory) => t.id === item.id)
     );
 
     return uniqueResults.map((item: EquipmentWithCategory) => ({
@@ -415,7 +415,7 @@ export const getPopularEquipmentForQuote = async (limit: number = 10): Promise<E
 // Admin CRUD operations
 export const addEquipment = async (equipment: Omit<Equipment, 'id' | 'created_at' | 'updated_at'>): Promise<Equipment | null> => {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('equipment')
       .insert([equipment])
       .select()
@@ -435,7 +435,7 @@ export const addEquipment = async (equipment: Omit<Equipment, 'id' | 'created_at
 
 export const updateEquipment = async (id: number, equipment: Partial<Equipment>): Promise<Equipment | null> => {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('equipment')
       .update(equipment)
       .eq('id', id)
@@ -512,7 +512,7 @@ export const deleteEquipmentImage = async (imagePath: string): Promise<void> => 
 // Admin category management
 export const addCategory = async (category: Omit<Category, 'id' | 'created_at'>): Promise<Category | null> => {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('categories')
       .insert([category])
       .select()
@@ -532,7 +532,7 @@ export const addCategory = async (category: Omit<Category, 'id' | 'created_at'>)
 
 export const updateCategory = async (id: number, category: Partial<Category>): Promise<Category | null> => {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('categories')
       .update(category)
       .eq('id', id)
