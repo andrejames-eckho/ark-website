@@ -145,7 +145,7 @@ const EquipmentManager: React.FC = () => {
             color: 'var(--color-text-muted)',
             margin: 0
           }}>
-            Manage your equipment inventory
+            Manage your equipment inventory ({equipment.length} total items)
           </p>
         </div>
         <button

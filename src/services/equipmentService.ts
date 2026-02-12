@@ -36,11 +36,12 @@ export const fetchEquipment = async (): Promise<EquipmentWithCategory[]> => {
 
 export const fetchAllEquipment = async (): Promise<EquipmentWithCategory[]> => {
   try {
+    // Use left join to include equipment even without categories
     const { data, error } = await supabase
       .from('equipment')
       .select(`
         *,
-        categories(name, icon_name)
+        categories!left(name, icon_name)
       `);
 
     if (error) {
