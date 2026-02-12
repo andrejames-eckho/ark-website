@@ -104,7 +104,7 @@ Follow the setup instructions below to run the application locally.
 
 5. **Access the application**
    - Main site: `http://localhost:5173`
-   - Admin login: `http://localhost:5173/admin`
+   - Admin login: `http://localhost:5173/backstage-access/login`
 
 ## Admin Management
 
