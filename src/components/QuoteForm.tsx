@@ -50,7 +50,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
     // Sanitization functions
     const sanitizeInput = (input: string): string => {
         return input
-            .trim()
             .replace(/[<>]/g, '') // Remove potential HTML tags
             .replace(/[{}()\[\]]/g, '') // Remove brackets
             .slice(0, 1000); // Limit length
@@ -58,7 +57,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
     const sanitizeTextarea = (input: string): string => {
         return input
-            .trim()
             .replace(/[<>]/g, '') // Remove potential HTML tags
             .slice(0, 2000); // Limit length for text areas
     };
@@ -89,7 +87,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
         if (!formData.client_name.trim()) {
             newErrors.client_name = 'Name is required';
-        } else if (formData.client_name.length > 100) {
+        } else if (formData.client_name.trim().length > 100) {
             newErrors.client_name = 'Name must be less than 100 characters';
         }
 
@@ -117,7 +115,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
         if (!formData.venue_name.trim()) {
             newErrors.venue_name = 'Venue name is required';
-        } else if (formData.venue_name.length > 200) {
+        } else if (formData.venue_name.trim().length > 200) {
             newErrors.venue_name = 'Venue name must be less than 200 characters';
         }
 
