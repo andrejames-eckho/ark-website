@@ -326,4 +326,4 @@ For issues related to:
 
 ---
 
-**ARK Pro Audio Equipment Management System** - Built with ❤️ for audio professionals
+**ARK Pro Audio Equipment Management System** - Built for ARK Pro Audio
