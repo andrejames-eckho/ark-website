@@ -2,7 +2,7 @@
 
 A modern web application for managing professional audio equipment inventory, built with React, TypeScript, and Supabase.
 
-**🚀 Live Demo**: [View Deployed Application](https://your-vercel-app-url.vercel.app)
+**🚀 Live Demo**: [View Deployed Application](https://ark-website-nine.vercel.app/)
 
 ## Features
 
