@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
                     <div>
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>CONNECT</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={16} /> mac2arkproaudio@gmail.com</div>
+                            <a href="mailto:mac2arkproaudio@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}><Mail size={16} /> mac2arkproaudio@gmail.com</a>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={16} /> +63 917 316 8388</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} /> 7th street, Lawaan Village, Iloilo City, Philippines</div>
                             <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
