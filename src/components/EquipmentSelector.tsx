@@ -34,7 +34,7 @@ const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
         const categoriesData = await getEquipmentCategoriesForQuote();
         setCategories(categoriesData);
       } catch (error) {
-        console.error('Error loading equipment data:', error);
+        // Error handled silently
         onError?.('Failed to load equipment options');
       } finally {
         setLoading(false);
@@ -58,7 +58,7 @@ const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
         const results = await searchEquipmentForQuote(searchQuery);
         setSearchResults(results);
       } catch (error) {
-        console.error('Error searching equipment:', error);
+        // Error handled silently
         setSearchResults([]);
       } finally {
         setSearching(false);
@@ -82,7 +82,7 @@ const EquipmentSelector: React.FC<EquipmentSelectorProps> = ({
         [categoryId]: equipment
       }));
     } catch (error) {
-      console.error('Error loading category equipment:', error);
+      // Error handled silently
     } finally {
       setLoadingCategory(null);
     }

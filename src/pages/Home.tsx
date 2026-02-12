@@ -30,7 +30,7 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
             setCategories(categoriesData);
             setEquipmentItems(equipmentData);
         } catch (err) {
-            console.error('Error loading data:', err);
+            // Error handled silently for production
         } finally {
             setLoading(false);
         }

@@ -36,7 +36,7 @@ const EquipmentManager: React.FC = () => {
       setEquipment(equipmentData);
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Error loading data:', error);
+      // Error handled silently
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ const EquipmentManager: React.FC = () => {
       await loadData(); // Refresh the list
       setDeleteConfirm(null);
     } catch (error) {
-      console.error('Error deleting equipment:', error);
+      // Error handled silently
     }
   };
 

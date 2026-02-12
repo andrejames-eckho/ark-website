@@ -30,8 +30,6 @@ interface FormErrors {
 }
 
 const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
-    console.log('QuoteForm rendered');
-    console.log('Environment variables:', import.meta.env.VITE_N8N_WEBHOOK_URL);
     
     const [formData, setFormData] = useState<FormData>({
         client_name: '',
@@ -48,6 +46,20 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+
+    // Sanitization functions
+    const sanitizeInput = (input: string): string => {
+        return input
+            .replace(/[<>]/g, '') // Remove potential HTML tags
+            .replace(/[{}()\[\]]/g, '') // Remove brackets
+            .slice(0, 1000); // Limit length
+    };
+
+    const sanitizeTextarea = (input: string): string => {
+        return input
+            .replace(/[<>]/g, '') // Remove potential HTML tags
+            .slice(0, 2000); // Limit length for text areas
+    };
 
     // Validation functions
     const validateEmail = (email: string): boolean => {
@@ -75,6 +87,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
         if (!formData.client_name.trim()) {
             newErrors.client_name = 'Name is required';
+        } else if (formData.client_name.trim().length > 100) {
+            newErrors.client_name = 'Name must be less than 100 characters';
         }
 
         if (!formData.email.trim()) {
@@ -101,6 +115,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
         if (!formData.venue_name.trim()) {
             newErrors.venue_name = 'Venue name is required';
+        } else if (formData.venue_name.trim().length > 200) {
+            newErrors.venue_name = 'Venue name must be less than 200 characters';
+        }
+
+        if (formData.event_details && formData.event_details.length > 1000) {
+            newErrors.event_details = 'Event details must be less than 1000 characters';
         }
 
         if (formData.gear_list.length === 0) {
@@ -113,9 +133,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
+        const sanitizedValue = name === 'event_details' ? sanitizeTextarea(value) : sanitizeInput(value);
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: sanitizedValue
         }));
         // Clear error for this field when user starts typing
         if (errors[name as keyof FormErrors]) {
@@ -158,23 +179,35 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
                 throw new Error('Webhook URL not configured. Please set VITE_N8N_WEBHOOK_URL in your environment variables.');
             }
 
-            // Log the payload for testing
-            console.log('Quote Form Payload:', JSON.stringify(formData, null, 2));
+            // Submit form data
             
-            // Add retry logic
+            // Add retry logic with timeout
             const maxRetries = 3;
             let retryCount = 0;
             let response: Response | null = null;
             
+            // Create a timeout controller for each request
+            const createTimeoutController = () => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+                return { controller, timeoutId };
+            };
+            
             while (retryCount < maxRetries && !response?.ok) {
+                const { controller, timeoutId } = createTimeoutController();
+                
                 try {
                     response = await fetch(webhookUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest', // Help prevent CSRF
                         },
-                        body: JSON.stringify(formData)
+                        body: JSON.stringify(formData),
+                        signal: controller.signal
                     });
+                    
+                    clearTimeout(timeoutId);
                     
                     if (response.ok) break;
                     
@@ -184,6 +217,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onClose }) => {
                         await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
                     }
                 } catch (fetchError) {
+                    clearTimeout(timeoutId);
+                    
+                    if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+                        throw new Error('Request timeout. Please try again.');
+                    }
+                    
                     retryCount++;
                     if (retryCount < maxRetries) {
                         await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));

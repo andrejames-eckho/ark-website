@@ -4,22 +4,6 @@ import { getEquipmentImageUrl } from '../utils/imageHelper';
 
 export const fetchEquipment = async (): Promise<EquipmentWithCategory[]> => {
   try {
-    console.log('Fetching equipment...');
-    
-    // Test basic connection first
-    console.log('Testing Supabase connection...');
-    const { data: testData, error: testError } = await supabase
-      .from('equipment')
-      .select('count')
-      .limit(1);
-    
-    console.log('Connection test result:', { testData, testError });
-    
-    if (testError) {
-      console.error('Supabase connection test failed:', testError);
-      return [];
-    }
-    
     // Add timeout test
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000);
@@ -34,15 +18,11 @@ export const fetchEquipment = async (): Promise<EquipmentWithCategory[]> => {
       .eq('status', 'available');
     
     const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
-    
-    console.log('Equipment fetch response:', { data, error });
 
     if (error) {
       console.error('Error fetching equipment:', error);
       return [];
     }
-
-    console.log('Equipment data fetched:', data?.length || 0, 'items');
 
     return data.map((item: EquipmentWithCategory) => ({
       ...item,
@@ -80,35 +60,15 @@ export const fetchAllEquipment = async (): Promise<EquipmentWithCategory[]> => {
 
 export const fetchCategories = async (): Promise<Category[]> => {
   try {
-    console.log('Fetching categories...');
-    
-    // Test basic connection first
-    console.log('Testing categories connection...');
-    const { data: testData, error: testError } = await supabase
-      .from('categories')
-      .select('count')
-      .limit(1);
-    
-    console.log('Categories connection test result:', { testData, testError });
-    
-    if (testError) {
-      console.error('Categories connection test failed:', testError);
-      return [];
-    }
-    
     const { data, error } = await supabase
       .from('categories')
       .select('*')
       .order('name');
 
-    console.log('Categories fetch response:', { data, error });
-
     if (error) {
       console.error('Error fetching categories:', error);
       return [];
     }
-
-    console.log('Categories data fetched:', data?.length || 0, 'items');
 
     return data || [];
   } catch (error) {

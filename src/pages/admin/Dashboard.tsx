@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
       setEquipment(equipmentData);
       setCategories(categoriesData);
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      // Error handled silently for production
     } finally {
       setLoading(false);
     }
