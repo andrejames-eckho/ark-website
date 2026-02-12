@@ -13,6 +13,7 @@ const EquipmentManager: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [showForm, setShowForm] = useState(false);
   const [editingEquipment, setEditingEquipment] = useState<EquipmentWithCategory | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
@@ -24,7 +25,7 @@ const EquipmentManager: React.FC = () => {
 
   useEffect(() => {
     filterEquipment();
-  }, [equipment, searchQuery, selectedCategory]);
+  }, [equipment, searchQuery, selectedCategory, selectedStatus]);
 
   const loadData = async () => {
     setLoading(true);
@@ -56,6 +57,11 @@ const EquipmentManager: React.FC = () => {
     // Filter by category
     if (selectedCategory) {
       filtered = filtered.filter(item => item.category_id === selectedCategory);
+    }
+
+    // Filter by status
+    if (selectedStatus) {
+      filtered = filtered.filter(item => item.status === selectedStatus);
     }
 
     setFilteredEquipment(filtered);
@@ -139,7 +145,7 @@ const EquipmentManager: React.FC = () => {
             color: 'var(--color-text-muted)',
             margin: 0
           }}>
-            Manage your equipment inventory
+            Manage your equipment inventory ({equipment.length} total items)
           </p>
         </div>
         <button
@@ -233,6 +239,28 @@ const EquipmentManager: React.FC = () => {
             ))}
           </select>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Filter size={20} color="var(--color-text-muted)" />
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            style={{
+              padding: '12px 16px',
+              backgroundColor: 'var(--color-bg)',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              color: 'var(--color-text)',
+              fontSize: '1rem',
+              outline: 'none',
+              minWidth: '150px'
+            }}
+          >
+            <option value="">All Status</option>
+            <option value="available" style={{ color: '#10b981' }}>✓ Available</option>
+            <option value="unavailable" style={{ color: '#ef4444' }}>✗ Unavailable</option>
+            <option value="maintenance" style={{ color: '#f59e0b' }}>⚙ Maintenance</option>
+          </select>
+        </div>
       </div>
 
       {/* Equipment List */}
@@ -252,7 +280,7 @@ const EquipmentManager: React.FC = () => {
               margin: 0,
               fontSize: '1.1rem'
             }}>
-              {searchQuery || selectedCategory
+              {searchQuery || selectedCategory || selectedStatus
                 ? 'No equipment found matching your criteria'
                 : 'No equipment found'}
             </p>
