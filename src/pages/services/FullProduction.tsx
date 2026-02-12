@@ -1,7 +1,7 @@
 import React from 'react';
 import { Music, CheckCircle, Users, Activity, Sliders } from 'lucide-react';
 
-const FullProduction: React.FC = () => {
+const FullProduction: React.FC<{ onOpenQuoteForm?: () => void }> = ({ onOpenQuoteForm }) => {
     return (
         <div className="page-transition">
             {/* Hero Section */}
@@ -75,14 +75,17 @@ const FullProduction: React.FC = () => {
                 <div className="container">
                     <h2 style={{ fontSize: '2.5rem', marginBottom: 'var(--spacing-4)' }}>READY TO <span style={{ color: 'var(--color-primary)' }}>ELEVATE YOUR EVENT?</span></h2>
                     <p style={{ marginBottom: 'var(--spacing-8)', color: 'var(--color-text-muted)' }}>Let our experts handle the technical heavy lifting.</p>
-                    <button style={{
-                        backgroundColor: 'var(--color-primary)',
-                        color: '#000',
-                        padding: '16px 48px',
-                        borderRadius: '4px',
-                        fontWeight: 800,
-                        fontSize: '1.1rem'
-                    }}>START YOUR CONSULTATION</button>
+                    <button 
+                        onClick={onOpenQuoteForm}
+                        style={{
+                            backgroundColor: 'var(--color-primary)',
+                            color: '#000',
+                            padding: '16px 48px',
+                            borderRadius: '4px',
+                            fontWeight: 800,
+                            fontSize: '1.1rem',
+                            cursor: 'pointer'
+                        }}>START YOUR CONSULTATION</button>
                 </div>
             </section>
         </div>

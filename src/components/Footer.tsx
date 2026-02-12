@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react';
 
 const Footer: React.FC = () => {
     return (
@@ -18,10 +18,10 @@ const Footer: React.FC = () => {
                     <div>
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>EQUIPMENT</h4>
                         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                            <li><Link to="/equipment">Audio Rental</Link></li>
-                            <li><Link to="/equipment">Lighting Rental</Link></li>
-                            <li><Link to="/equipment">LED & Video</Link></li>
-                            <li><Link to="/equipment">Rigging Solutions</Link></li>
+                            <li><Link to="/equipment?category=1">Audio Rental</Link></li>
+                            <li><Link to="/equipment?category=2">Lighting Rental</Link></li>
+                            <li><Link to="/equipment?category=3">LED & Video</Link></li>
+                            <li><Link to="/equipment?category=4">Rigging Solutions</Link></li>
                         </ul>
                     </div>
                     <div>
@@ -37,7 +37,6 @@ const Footer: React.FC = () => {
                         <h4 style={{ marginBottom: 'var(--spacing-3)' }}>COMPANY</h4>
                         <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
                             <li><Link to="/about">Our Story</Link></li>
-                            <li><a href="#">Contact Us</a></li>
                         </ul>
                     </div>
                     <div>
@@ -46,6 +45,20 @@ const Footer: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={16} /> mac2arkproaudio@gmail.com</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={16} /> +63 917 316 8388</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} /> 7th street, Lawaan Village, Iloilo City, Philippines</div>
+                            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                                <a href="https://www.facebook.com/ARKproaudioandlights" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                                    <Facebook size={18} />
+                                    <span>Facebook</span>
+                                </a>
+                                <a href="https://www.instagram.com/arkpro.official/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                                    <Instagram size={18} />
+                                    <span>Instagram</span>
+                                </a>
+                                <a href="https://wa.me/639173168388" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+                                    <MessageCircle size={18} />
+                                    <span>WhatsApp</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
