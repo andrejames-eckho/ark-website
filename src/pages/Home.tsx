@@ -73,6 +73,7 @@ const Home: React.FC<HomeProps> = ({ onOpenQuoteForm }) => {
                     loop
                     muted
                     playsInline
+                    poster="/hero.png"
                     style={{
                         position: 'absolute',
                         top: 0,
