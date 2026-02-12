@@ -143,7 +143,7 @@ If you have existing admins with user_metadata.role = 'admin', the security migr
 
 ### Admin Access
 
-- **Login URL**: `/admin`
+- **Login URL**: `/backstage-access/login`
 - **Dashboard URL**: `/backstage-access`
 - **Required**: Valid admin role in secure admin_roles table
 
