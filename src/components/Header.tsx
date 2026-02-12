@@ -50,7 +50,6 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
                     )}
                     <button
                         onClick={() => {
-                            console.log('GET A QUOTE button clicked');
                             onOpenQuoteForm();
                         }}
                         style={{
@@ -115,7 +114,6 @@ const Header: React.FC<HeaderProps> = ({ onOpenQuoteForm }) => {
                         )}
                         <button
                             onClick={() => {
-                                console.log('GET A QUOTE button clicked');
                                 onOpenQuoteForm();
                                 setIsMobileMenuOpen(false);
                             }}

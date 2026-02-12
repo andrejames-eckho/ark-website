@@ -31,7 +31,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Helper function to verify localStorage cache
   const verifyAdminCache = (userId: string) => {
     const cachedStatus = localStorage.getItem(`ark_admin_${userId}`);
-    console.log('🔍 Cache verification:', { userId, cachedStatus });
     return cachedStatus === 'true';
   };
 
@@ -42,7 +41,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    console.log('🔍 Starting admin status check for:', userId);
     setAdminLoading(true);
 
     try {
@@ -57,9 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('user_id', userId)
         .eq('role', 'admin');
 
-      console.log('📡 Executing database query...');
       const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
-      console.log('📊 Query result:', { data, error });
 
       if (error && error.message !== 'Admin check timeout') {
         console.error('Admin check error:', error);
@@ -68,17 +64,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.removeItem(`ark_admin_${userId}`);
         }
       } else if (data && data.length > 0) {
-        console.log('✅ Admin status confirmed, caching...');
         setIsAdmin(true);
         // Cache admin status in localStorage
         localStorage.setItem(`ark_admin_${userId}`, 'true');
-        console.log('💾 Admin status cached to localStorage');
       } else if (error && error.message === 'Admin check timeout') {
-        console.error('⏰ Admin check timed out');
+        console.error('Admin check timed out');
         if (!preserveOnError) {
           // Check if we already have admin status set and preserve it temporarily
           if (isAdmin) {
-            console.log('🔄 Preserving existing admin status due to timeout');
             // Don't change isAdmin, just extend the cache
             localStorage.setItem(`ark_admin_${userId}`, 'true');
           } else {
@@ -87,7 +80,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         }
       } else {
-        console.log('❌ User is not an admin');
         setIsAdmin(false);
         localStorage.removeItem(`ark_admin_${userId}`);
       }
@@ -100,7 +92,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } finally {
       setAdminLoading(false);
-      console.log('✅ Admin status check completed');
     }
   };
 
@@ -108,7 +99,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // onAuthStateChange handles both the initial session and subsequent changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 Auth state changed:', { event, hasSession: !!session, userEmail: session?.user?.email });
         const currentUser = session?.user ?? null;
 
         // Update user state immediately
@@ -117,15 +107,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (currentUser) {
           // Check localStorage for cached admin status first to avoid flickering
           const cachedAdminStatus = verifyAdminCache(currentUser.id);
-          console.log('🔍 Session detected:', { userId: currentUser.id, cachedAdminStatus, event });
 
           if (cachedAdminStatus) {
-            console.log('✅ Using cached admin status');
             setIsAdmin(true);
             // If we have cached status, we can stop loading now
             setLoading(false);
           } else {
-            console.log('🔄 No cached status, checking database...');
             // We need to check the database
             // Use preserveOnError=true for initialization events to prevent logout on network glitches
             const preserve = event === 'INITIAL_SESSION' || event === 'SIGNED_IN';
@@ -133,7 +120,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setLoading(false);
           }
         } else {
-          console.log('🚪 No session detected');
           setIsAdmin(false);
           setLoading(false);
         }

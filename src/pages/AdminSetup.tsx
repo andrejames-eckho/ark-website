@@ -21,7 +21,6 @@ const AdminSetup: React.FC = () => {
       const { error } = await supabase.rpc('setup_first_admin');
 
       if (error) {
-        console.error('Error setting up first admin:', error);
         setMessage(`Error: ${error.message}`);
       } else {
         setMessage('✅ Admin access granted successfully! Refreshing...');
@@ -30,7 +29,6 @@ const AdminSetup: React.FC = () => {
         }, 2000);
       }
     } catch (err: any) {
-      console.error('Setup error:', err);
       setMessage(`Error: ${err.message}`);
     } finally {
       setLoading(false);

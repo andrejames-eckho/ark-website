@@ -76,7 +76,6 @@ const Equipment: React.FC = () => {
             }
         } catch (err) {
             setError('Failed to load equipment data');
-            console.error('Error loading data:', err);
         } finally {
             setLoading(false);
         }
@@ -89,7 +88,6 @@ const Equipment: React.FC = () => {
             setUnsortedEquipmentItems(data);
         } catch (err) {
             setError('Failed to load equipment');
-            console.error('Error loading equipment:', err);
         } finally {
             setLoading(false);
         }
@@ -102,7 +100,6 @@ const Equipment: React.FC = () => {
             setUnsortedEquipmentItems(data);
         } catch (err) {
             setError('Failed to load equipment by category');
-            console.error('Error loading equipment by category:', err);
         } finally {
             setLoading(false);
         }
@@ -115,7 +112,6 @@ const Equipment: React.FC = () => {
             setUnsortedEquipmentItems(data);
         } catch (err) {
             setError('Failed to search equipment');
-            console.error('Error searching equipment:', err);
         } finally {
             setLoading(false);
         }
